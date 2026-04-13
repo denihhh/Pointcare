@@ -7,12 +7,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body class="bg-background text-foreground h-full pt-2">
 
-    <div class="mx-auto">
+    <div class="mx-auto min-h-screen flex flex-col">
         <x-layout.nav />
-        <main class=" mt-8">
+        <main class=" mt-8 grow">
             {{$slot}}
         </main>
     </div>
@@ -31,4 +33,5 @@
     <x-layout.footer />
 
 </body>
+
 </html>

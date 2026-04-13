@@ -29,4 +29,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function doctor(){
+        return $this->hasOne(Doctor::class);
+    }
+    public function isDoctor(){
+        return $this->role === 'doctor';
+    }
+    public function appointments(){
+        return $this->hasMany(Appointment::class, 'patient_id');
+    }
 }
+
