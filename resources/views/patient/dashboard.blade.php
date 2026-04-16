@@ -1,6 +1,8 @@
 <x-layout >
-    <div class="py-12 ">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    
+    <div class="mb-12">
+        <x-return/>
+        <div class="max-w-7xl mt-8 mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-500">
                 <div class="flex justify-between items-center mb-6">
                     <div>

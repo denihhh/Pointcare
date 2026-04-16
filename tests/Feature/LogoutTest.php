@@ -8,6 +8,7 @@ it('log out an authenticated user', function(){
     actingAs($user)
 
         ->visit('/')
+        ->click('@profile-dropdown')
         ->click('@logout-button')
         ->assertPathIs('/');
 

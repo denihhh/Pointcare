@@ -29,7 +29,7 @@
      @auth
          <div class="flex items-center gap-x-5">
              <x-notification.notibar/>
-             <div x-data="{ open: false }" @click.away="open = false" class="relative">
+             <div data-test="profile-dropdown" x-data="{ open: false }" @click.away="open = false" class="relative">
 
                  <button @click="open = !open" type="button"
                      class="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:shadow-md p-1 pr-3 border border-gray-100">
@@ -46,7 +46,7 @@
 
                      {{-- User Name and Down Arrow --}}
                      <span class="hidden md:flex items-center text-gray-700 font-medium">
-                         {{ auth()->user()->name }}
+                         
                          <svg class="w-4 h-4 ml-1 text-gray-400 transition-transform duration-200"
                              :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -60,7 +60,7 @@
                      x-transition:leave="transition ease-in duration-75"
                      x-transition:leave-start="transform opacity-100 scale-100"
                      x-transition:leave-end="transform opacity-0 scale-95"
-                     class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-xl bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border border-gray-50 overflow-hidden"
+                     class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-xl bg-white py-1 shadow-lg focus:outline-none border border-gray-50 overflow-hidden"
                      style="display: none;">
 
                      <div class="px-4 py-3 border-b border-gray-50">

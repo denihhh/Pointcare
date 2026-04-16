@@ -4,7 +4,7 @@
     $errorClass = $errors->has($name) ? 'border-red-500' : 'border-gray-300';
 @endphp
 
-<div class=" form-control w-full space-y-2 mb-4">
+<div class=" form-control w-full mb-4">
     <label for="{{ $name }}" class="label font-semibold">{{ $label }}</label>
     <input type="{{ $type }}"
            value="{{ $type !== 'password' ? old($name) : '' }}"
