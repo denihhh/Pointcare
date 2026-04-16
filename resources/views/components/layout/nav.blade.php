@@ -3,10 +3,9 @@
 
         <!-- Logo Section -->
         <div class="flex-1 flex justify-start items-center"><a href="/">
-            <img src="{{ asset('images/M_Logo.png') }}"
-           alt="Smart Clinic Logo"
-           class="h-8 w-auto md:h-10 object-contain " />
-           </a>
+                <x-logo.weblogo class="h-8 w-auto md:h-12 text-red-600" />
+                <p class="inline-block align-middle ml-2 text-lg font-bold text-gray-600">PointCare</p>
+            </a>
         </div>
 
         <!-- Navigation Links -->
@@ -17,22 +16,7 @@
         </div>
 
         <!-- User Actions -->
-        <div class="flex-1 flex justify-end gap-x-5 text-center">
-            @auth
-                <form method="POST" action="/logout">
-                    @csrf
-                    <button data-test="logout-button" type="submit" class="btn outline-1 bg-black hover:bg-green-600 hover:text-black  text-white" >
-                        Logout
-                    </button>
-                </form>
-            @endauth
-
-            @guest
-                <a href="/login" class="btn outline-1 bg-black hover:bg-green-600 hover:text-black  text-white" >Login</a>
-                <a href="/register" class="btn outline-1 btn-secondary">Register</a>
-            @endguest
-
-        </div>
+        <x-layout.profilenav/>
     </div>
 
 </nav>

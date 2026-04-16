@@ -19,7 +19,7 @@
 
     @auth
         <div class="flex justify-center space-x-4 ">
-        <a href="/dashboard" class="btn btn-primary h-12 font-bold hover:bg-green-600 hover:text-black transition">
+        <a href="/dashboard" class="btn btn-primary h-12 font-bold hover:bg-foreground transition">
             Booking Now!
         </a>
     </div>

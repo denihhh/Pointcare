@@ -11,7 +11,7 @@
                 <button data-test="login-button" type="submit" class="btn btn-neutral mt-2 h-10 w-full shadow hover:shadow-lg transition">Sign In</button>
 
             </form>
-            <p class="text-center text-sm mt-2">New to our platform ? <a href="/register" class="text-blue-300 hover:underline">Register</a> now.</p>
+            <p class="text-center text-sm mt-2">New to our platform ? <a href="/register" class="text-blue-500 hover:underline">Register</a> now.</p>
 
 
     </x-form>

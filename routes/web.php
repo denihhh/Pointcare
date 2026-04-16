@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/',fn()=> view('welcome'));
+Route::get('/notifications',fn()=> view('notifications'))->middleware('auth');
+
+
+Route::get('/about',fn()=> view('about'));
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest');
 Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest');
@@ -26,8 +30,10 @@ Route::get('/dashboard', function(){
     if(!Auth::user()){
         return redirect('/login')->with('success', 'Please login to access the dashboard.');
     }
+    
     return app(DashboardController::class)->index();
 });
 
 Route::patch('/appointments/{appointment}/status',[AppointmentController::class, 'updateStatus'])
     ->middleware('auth');
+

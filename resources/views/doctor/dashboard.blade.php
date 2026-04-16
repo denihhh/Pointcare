@@ -11,8 +11,11 @@
                         Today: {{ now()->format('d M Y') }}
                     </div>
                 </div>
-
+                @if($appointments->isEmpty())
+                    <p class="text-gray-500 text-center italic my-10">No scheduled appointments for now.</p>
+                @else
                 <x-table :appointments="$appointments" title="Patient Details" role="doctor" />
+                @endif
             </div>
         </div>
     </div>

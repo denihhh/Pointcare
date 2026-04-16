@@ -14,9 +14,12 @@ use Tests\TestCase;
 |
 */
 
-pest()->extend(TestCase::class)
-    ->use(RefreshDatabase::class)
-    ->in('Feature');
+// tests/Pest.php
+
+uses(
+    Tests\TestCase::class,
+    Illuminate\Foundation\Testing\RefreshDatabase::class,
+)->in('Feature');
 
 /*
 |--------------------------------------------------------------------------

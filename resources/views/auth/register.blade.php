@@ -13,7 +13,7 @@
 
             </form>
 
-                <p class="text-center text-sm mt-2">Already have an account ? <a href="/login" class="text-blue-300 hover:underline">Log in</a> now.</p>
+                <p class="text-center text-sm mt-2">Already have an account ? <a href="/login" class="text-blue-500 hover:underline">Log in</a> now.</p>
 
     </x-form>
 </x-layout.layout>

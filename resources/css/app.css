@@ -16,14 +16,26 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --color-background: oklch(0.12 0 0);
-    --color-foreground: oklch(0.95 0 0);
-    --color-card: oklch(0.16 0 0);
-    --color-primary: oklch(0.65 0.15 160);
-    --color-primary-foreground: oklch(0.12 0 0);
-    --color-border: oklch(0.24 0 0);
-    --color-input: oklch(0.24 0 0);
-    --color-muted-foreground: oklch(0.6 0 0);
+    --color-background: oklch(0.95 0.015 15);
+
+    /* Main Text (Deep Charcoal for readability) */
+    --color-foreground: oklch(0.25 0.02 20);
+
+    /* Cards (Pure White to stand out against the pink bg) */
+    --color-card: oklch(1 0 0);
+
+    /* Primary Accent (A sophisticated Rose-Red to match your M logo) */
+    --color-primary: oklch(0.55 0.18 20);
+
+    /* Text on Primary Buttons (White) */
+    --color-primary-foreground: oklch(1 0 0);
+
+    /* Subtle Elements (Borders and Inputs) */
+    --color-border: oklch(0.9 0.02 20);
+    --color-input: oklch(0.9 0.02 20);
+
+    /* Muted Text (Soft Gray-Pink) */
+    --color-muted-foreground: oklch(0.6 0.02 20);
 
 }
 

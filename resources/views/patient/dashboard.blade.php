@@ -11,10 +11,14 @@
                         Today: {{ now()->format('d M Y') }}
                     </div>
                 </div>
-
+                @if($appointments->isEmpty())
+                    <p class="text-gray-500 text-center italic mt-12">No appointments found. Book your first appointment now!</p>
+                @else
                 <x-table :appointments="$appointments" title="Appointment Details" role="patient" />
+                @endif
                 <div class="mt-2 flex flex-col items-end">
                     <a href="/appointments/create"
+                        data-test="new-appointment-btn"
                         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition
                                 mt-4">
                         + New Appointment
