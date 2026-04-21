@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
-<body class="bg-background text-foreground h-full pt-2">
+<body class="overflow-x-hidden bg-background text-foreground h-full pt-2 ">
 
     <div class="mx-auto min-h-screen flex flex-col">
         <x-layout.nav />
@@ -29,7 +29,7 @@
             {{ session('success') }}
         </div>
     @endsession
-
+     <x-scroll/>
     <x-layout.footer />
 
 </body>

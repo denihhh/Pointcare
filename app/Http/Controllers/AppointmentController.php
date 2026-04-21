@@ -41,4 +41,40 @@ class AppointmentController extends Controller
         ]);
         return back()->with('success', 'Appointment status updated successfully.');
     }
+
+    public function edit(Appointment $appointment){
+        $doctors = User::where('role', 'doctor')->get();
+
+        if($appointment->patient_id !== Auth::id()){
+            abort(403);
+        }
+        return view('appointments.edit', compact('appointment','doctors'));
+    }
+
+    public function update(Request $request, Appointment $appointment){
+        if($appointment->patient_id !== Auth::id()){
+            abort(403);
+        }
+
+        $attributes= $request->validate([
+            'doctor_id'=>['required', 'exists:users,id'],
+            'appointment_time'=>['required', 'date', 'after:now'],
+            'reason'=>['required', 'string', 'max:1000']
+        ]);
+
+        $appointment->update($attributes);
+
+        return redirect('/dashboard')->with('success', 'Appointment updated successfully.');
+    }
+
+    public function destroy(Appointment $appointment){
+
+        if($appointment->patient_id!== Auth::id()){
+            abort(403);
+        }
+
+        $appointment->update(['status'=>'cancelled']);
+
+        return redirect('/dashboard')->with('success', 'Appointment cancelled successfully.');
+    }
 }

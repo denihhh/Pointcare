@@ -1,11 +1,17 @@
-@props(['label', 'name'])
+@props(['label', 'name', 'value' => ''])
 
 <div class="mb-4">
-    <label for="{{ $name }}" class="block text-sm font-medium text-black mb-1">{{ $label }}</label>
+    @if ($label)
+        <label for="{{ $name }}" class="block text-sm font-medium text-black mb-1">{{ $label }}</label>
+    @endif
 
     <div class="relative">
-        <input type="text" id="{{ $name }}" name="{{ $name }}" placeholder="Select Date & Time" readonly
-            class="datepicker w-full border border-gray-500 p-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-input">
+        <input type="text"
+                id="{{ $name }}"
+                name="{{ $name }}"
+                placeholder="Select Date & Time" readonly
+                values="{{ old($name, $value) }}"
+                class="datepicker w-full border border-gray-300 p-2 rounded-lg focus:ring-blue-500 focus:border-blue-500 ">
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -24,6 +30,7 @@
         flatpickr("#{{ $name }}", {
             enableTime: true,
             dateFormat: "Y-m-d H:i",
+            defaultDate: "{{ old($name, $value) }}",
             minDate: "today", // Security flex: users can't book the past
             time_24hr: true,
 

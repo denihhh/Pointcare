@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
 {
+    protected $casts = [
+        'appointment_time' => 'datetime',
+    ];
     protected $fillable = [
         'patient_id',
         'doctor_id',
@@ -14,11 +17,13 @@ class Appointment extends Model
         'status',
     ];
 
-    public function patient(){
+    public function patient()
+    {
         return $this->belongsTo(User::class, 'patient_id');
     }
 
-    public function doctor(){
+    public function doctor()
+    {
         return $this->belongsTo(User::class, 'doctor_id');
     }
 }
