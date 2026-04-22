@@ -40,7 +40,7 @@
                                 <div
                                     class="relative p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
                                     <div
-                                        class="flex-shrink-0 w-24 h-24 bg-cyan-50 rounded-2xl flex flex-col items-center justify-center border border-cyan-100">
+                                        class="shrink-0 w-24 h-24 bg-cyan-50 rounded-2xl flex flex-col items-center justify-center border border-cyan-100">
                                         <span
                                             class="text-3xl font-black text-cyan-700">{{ $upcomingAppointment->appointment_time->format('d') }}</span>
                                         <span

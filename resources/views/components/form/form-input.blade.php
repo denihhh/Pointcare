@@ -1,5 +1,5 @@
 @props(['label', 'name', 'type' => 'text', 'value' => '']) {{-- 1. Added value prop --}}
-
+{{-- form utk appointment, try update nanti atau combine skali dgn field.blade.php --}}
 @php
     $errorClass = $errors->has($name) ? 'border-red-500' : 'border-gray-300';
 @endphp
