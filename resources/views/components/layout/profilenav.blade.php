@@ -32,11 +32,11 @@
              <div data-test="profile-dropdown" x-data="{ open: false }" @click.away="open = false" class="relative">
 
                  <button @click="open = !open" type="button"
-                     class="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:shadow-md p-1 pr-3 border border-gray-100">
+                     class="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:shadow-md p-1 pr-3 border border-rose-200">
 
                      {{-- User Avatar / Initials --}}
                      <div
-                         class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs mr-2 overflow-hidden border border-primary/20">
+                         class="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs overflow-hidden border border-primary/20">
                          @if (auth()->user()->profile_photo)
                              <img src="{{ auth()->user()->profile_photo }}" alt="Profile">
                          @else
@@ -46,7 +46,7 @@
 
                      {{-- User Name and Down Arrow --}}
                      <span class="hidden md:flex items-center text-gray-700 font-medium">
-                         
+
                          <svg class="w-4 h-4 ml-1 text-gray-400 transition-transform duration-200"
                              :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
