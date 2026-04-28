@@ -1,6 +1,6 @@
 @props(['title', 'description'])
 
-<div class="-mt-12 min-h-screen bg-rose-50/30 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+<div class="-mt-8 min-h-screen bg-rose-50/30 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
     <div class="absolute top-24 left-24 w-96 h-96 bg-rose-200/50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse"></div>
     <div class="absolute bottom-24 right-24 w-96 h-96 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse delay-700"></div>
 

@@ -9,7 +9,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/notifications',fn()=> view('notifications'))->middleware('auth');
 Route::get('/about',fn()=> view('about'));
@@ -32,7 +32,7 @@ Route::get('/appointments/create', [AppointmentController::class, 'create'])
     ->middleware(['auth', 'role:patient']);
 // Store Appointments
 Route::post('/appointments', [AppointmentController::class, 'store'])->middleware('auth');
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
 // Doctor update status
 Route::patch('/appointments/{appointment}/status',[AppointmentController::class, 'updateStatus'])
@@ -44,6 +44,18 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::patch('/appointments/{appointment}', [AppointmentController::class, 'update']);
     Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy']);
 });
+
+Route::get('/api/available-slots', [AppointmentController::class, 'getAvailableSlots'])->middleware('auth');
+Route::middleware(['auth', 'role:doctor'])->group(function () {
+    // Page to write the EHR
+    Route::get('/consultation/{appointment}', [AppointmentController::class, 'consultation'])->name('consultation');
+    // Save the EHR and mark as completed
+    Route::patch('/consultation/{appointment}/complete', [AppointmentController::class, 'completeConsultation']);
+});
+
+Route::get('/appointments/{appointment}/record', [AppointmentController::class, 'showRecord'])
+    ->middleware('auth')
+    ->name('appointments.record');
 
 //Profile Route
 Route::get('/profile', fn() => view('profile.profile'))->middleware('auth');

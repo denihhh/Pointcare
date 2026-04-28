@@ -28,7 +28,7 @@
  <div class="flex-1 flex justify-end gap-x-5 text-center">
      @auth
          <div class="flex items-center gap-x-5">
-             <x-notification.notibar/>
+             <x-notification.notibar />
              <div data-test="profile-dropdown" x-data="{ open: false }" @click.away="open = false" class="relative">
 
                  <button @click="open = !open" type="button"
@@ -99,11 +99,19 @@
                  </div>
              </div>
          </div>
-         @endauth
+     @endauth
 
-         @guest
-             <a href="/login" class="btn outline-1 bg-black hover:bg-gray-600  text-white">Login</a>
-             <a href="/register" class="btn outline-1 btn-secondary">Register</a>
-         @endguest
+     @guest
+    <div class="flex items-center gap-x-1 sm:gap-x-3">
+        <a href="/login" class="hidden sm:block text-sm font-bold text-slate-600 hover:text-rose-600 px-4 py-2 transition-colors">
+            Login
+        </a>
 
-     </div>
+        <a href="/register"
+            class="bg-rose-500 hover:bg-rose-600 text-white text-[11px] sm:text-sm font-black px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap">
+            Get Started
+        </a>
+    </div>
+@endguest
+
+ </div>
