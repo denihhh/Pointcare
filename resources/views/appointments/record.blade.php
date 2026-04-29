@@ -28,14 +28,16 @@
             </div>
             <div>
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Status</label>
-                <span class="inline-block px-2 py-0.5 bg-emerald-500 text-white text-[9px] font-black rounded uppercase">Finalized</span>
+                <span class="inline-block px-2 py-0.5 {{ $appointment->status === 'completed' ? 'bg-emerald-500' : 'bg-amber-500' }} text-white text-[9px] font-black rounded uppercase">
+                    {{ ucfirst($appointment->status) }}
+                </span>
             </div>
         </div>
 
         <div class="space-y-10">
             <section>
                 <h2 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-3 flex items-center">
-                    <span class="w-2 h-2 bg-rose-500 rounded-full mr-2"></span> Patients Complaints
+                    <span class="w-2 h-2 bg-rose-500 rounded-full mr-2"></span> Patient's Complaints
                 </h2>
                 <p class="text-slate-600 leading-relaxed pl-4 border-l-2 border-rose-300">{{ $appointment->symptoms }}</p>
             </section>

@@ -9,8 +9,7 @@
                 <th class="pb-4 px-4 text-right">Status</th>
             </tr>
         </thead>
-        <tbody>
-            @foreach ($appointments as $appointment)
+        @foreach ($appointments as $appointment)
         <tbody x-data="{ expanded: false }">
             <tr @click="expanded = !expanded"
                 class="group bg-white hover:bg-slate-50/50 hover:cursor-pointer transition-all duration-200">
@@ -139,7 +138,7 @@
             </tr>
         </tbody>
         @endforeach
-        </tbody>
+
     </table>
 </div>
 

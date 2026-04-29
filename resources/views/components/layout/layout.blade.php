@@ -8,6 +8,7 @@
     <title>{{ $title }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="overflow-x-hidden bg-background text-foreground h-full pt-2 ">
@@ -40,7 +41,7 @@
             Swal.fire({
                 icon: 'success',
                 title: '<span class="text-slate-900 font-black uppercase tracking-widest text-lg">Success!</span>',
-                text: "{{ session('alert') }}",
+                text: @json(session('alert')),
                 background: '#ffffff',
                 confirmButtonText: 'CONTINUE',
                 confirmButtonColor: '#f43f5e', // Rose-500
@@ -63,7 +64,7 @@
                 icon: 'error',
                 iconColor: '#f43f5e',
                 title: '<span class="text-rose-600 font-black uppercase tracking-widest text-lg">Action Blocked</span>',
-                text: "{{ session('error') }}",
+                text: @json(session('error')),
                 background: '#fff1f2', // Very light Rose tint
                 confirmButtonText: 'UNDERSTOOD',
                 confirmButtonColor: '#0f172a', // Slate-900 (Looks serious for errors)
