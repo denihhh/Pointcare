@@ -91,10 +91,18 @@
                     if (!this.doctorId || !this.selectedDate) return;
 
                     try {
-                        const response = await fetch(`/api/available-slots?doctor_id=${this.doctorId}&date=${this.selectedDate}`);
+                        const params = new URLSearchParams({
+                            doctor_id: this.doctorId,
+                            date: this.selectedDate
+                        });
+                        const response = await fetch(`/api/available-slots?${params}`);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
                         this.slots = await response.json();
                     } catch (e) {
-                        console.error("Error fetching slots");
+                        console.error("Error fetching slots:", e);
+                        this.slots = [];
                     }
                 },
 

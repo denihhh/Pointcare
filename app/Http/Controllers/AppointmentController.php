@@ -46,14 +46,14 @@ class AppointmentController extends Controller
 
     public function create()
     {
-        $doctors = User::where('role', 'doctor')->get();
+        $doctors = User::where('role', 'doctor')->select('id', 'name')->get();
         return view('appointments.create', compact('doctors'));
     }
 
     public function store(Request $request)
     {
         $attributes = $request->validate([
-            'doctor_id' => ['required', 'exists:users,id'],
+            'doctor_id' => ['required', 'exists:users,id,role,doctor'],
             'appointment_time' => ['required', 'date', 'after:now'],
             'reason' => ['required', 'string', 'max:1000']
         ]);
@@ -87,7 +87,7 @@ class AppointmentController extends Controller
             return redirect('/dashboard')->with('error', 'Cannot edit a ' . $appointment->status . ' appointment.');
         }
 
-        $doctors = User::where('role', 'doctor')->get();
+        $doctors = User::where('role', 'doctor')->select('id', 'name')->get();
         return view('appointments.edit', compact('appointment', 'doctors'));
     }
 
@@ -100,7 +100,7 @@ class AppointmentController extends Controller
         }
 
         $attributes = $request->validate([
-            'doctor_id' => ['required', 'exists:users,id'],
+            'doctor_id' => ['required', 'exists:users,id,role,doctor'],
             'appointment_time' => ['required', 'date', 'after:now'],
             'reason' => ['required', 'string', 'min:5', 'max:1000'],
         ]);

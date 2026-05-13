@@ -87,7 +87,7 @@
                 <label class="block text-sm font-black text-slate-700 tracking-tight ml-1">4. Select an available time</label>
 
                 <input type="hidden" name="selected_time" x-model="selectedTime">
-                <input type="hidden" name="appointment_time" :value="selectedDate + ' ' + selectedTime">
+                <input type="hidden" name="appointment_time" :value="selectedTime ? selectedDate + ' ' + selectedTime : ''">
 
                 <div class="grid grid-cols-3 gap-3">
                     <template x-for="slot in slots" :key="slot">

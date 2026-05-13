@@ -8,7 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 
-
+Route::get('/contact', fn() => view('contact'))->name('contact');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/notifications',fn()=> view('notifications'))->middleware('auth');

@@ -21,7 +21,7 @@
            value="{{ $type !== 'password' ? old($name, $value) : '' }}"
            id="{{ $name }}"
            name="{{ $name }}"
-           placeholder="{{ $placeholder ?: 'Enter ' . strtolower($label) }}"
+           placeholder="{{ $placeholder ?: ($label ? 'Enter ' . strtolower($label) : '') }}"
            class="{{ $baseClasses }} {{ $statusClasses }}"
            {{ $attributes }}>
 

@@ -9,7 +9,7 @@ class AppointmentPolicy
 {
     public function manage(User $user, Appointment $appointment)
     {
-        return $user->id === $appointment->doctor_id;
+        return $user->role === 'doctor' && $user->id === $appointment->doctor_id;
     }
 
     public function viewRecord(User $user, Appointment $appointment)
@@ -19,11 +19,11 @@ class AppointmentPolicy
 
     public function update(User $user, Appointment $appointment)
     {
-        return $user->id === $appointment->patient_id;
+        return $user->role === 'patient' && $user->id === $appointment->patient_id;
     }
 
     public function delete(User $user, Appointment $appointment)
     {
-        return $user->id === $appointment->patient_id;
+        return $user->role === 'patient' && $user->id === $appointment->patient_id;
     }
 }
