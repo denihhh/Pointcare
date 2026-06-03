@@ -2,110 +2,102 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AvailableSlotsRequest;
+use App\Http\Requests\CompleteConsultationRequest;
+use App\Http\Requests\StoreAppointmentRequest;
+use App\Http\Requests\UpdateAppointmentRequest;
+use App\Http\Requests\UpdateAppointmentStatusRequest;
 use App\Models\Appointment;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Services\AppointmentQueryService;
+use App\Services\AppointmentService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
     use AuthorizesRequests;
 
-    public function getAvailableSlots(Request $request)
+    public function __construct(
+        private AppointmentService $appointmentService,
+        private AppointmentQueryService $appointmentQueryService
+    ) {}
+
+    public function getAvailableSlots(AvailableSlotsRequest $request)
     {
-        $request->validate([
-            'doctor_id' => 'required|exists:users,id',
-            'date' => 'required|date'
-        ]);
+        $this->authorize('create', Appointment::class);
 
-        $now = Carbon::now('Asia/Kuala_Lumpur');
-        $selectedDate = Carbon::parse($request->date, 'Asia/Kuala_Lumpur');
-        $potentialSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+        $validated = $request->validated();
 
-        $bookedSlots = Appointment::where('doctor_id', $request->doctor_id)
-            ->whereDate('appointment_time', $request->date)
-            ->whereIn('status', ['pending', 'confirmed'])
-            ->pluck('appointment_time')
-            ->map(fn($time) => Carbon::parse($time)->format('H:i'))
-            ->toArray();
+        $slots = $this->appointmentQueryService->getAvailableSlots(
+            (int) $validated['doctor_id'],
+            $validated['date']
+        );
 
-        $availableSlots = array_filter($potentialSlots, function ($slot) use ($selectedDate, $now, $bookedSlots) {
-            if (in_array($slot, $bookedSlots)) return false;
-
-            if ($selectedDate->isToday()) {
-                $slotDateTime = Carbon::createFromFormat('Y-m-d H:i', $selectedDate->format('Y-m-d') . ' ' . $slot, 'Asia/Kuala_Lumpur');
-                if ($slotDateTime->lessThan($now)) return false;
-            }
-            return true;
-        });
-
-        return response()->json(array_values($availableSlots));
+        return response()->json($slots);
     }
 
     public function create()
     {
-        $doctors = User::where('role', 'doctor')->select('id', 'name')->get();
+        $this->authorize('create', Appointment::class);
+
+        $doctors = $this->appointmentQueryService->getDoctorsForSelect();
+
         return view('appointments.create', compact('doctors'));
     }
 
-    public function store(Request $request)
+    public function store(StoreAppointmentRequest $request)
     {
-        $attributes = $request->validate([
-            'doctor_id' => ['required', 'exists:users,id,role,doctor'],
-            'appointment_time' => ['required', 'date', 'after:now'],
-            'reason' => ['required', 'string', 'max:1000']
-        ]);
+        $this->authorize('create', Appointment::class);
 
-        $attributes['patient_id'] = Auth::id();
-        $attributes['status'] = 'pending';
+        $this->appointmentService->create(
+            $request->validated(),
+            Auth::id()
+        );
 
-        Appointment::create($attributes);
         return redirect('/dashboard')->with('alert', 'Appointment booked successfully.');
     }
 
-    public function updateStatus(Request $request, Appointment $appointment)
+    public function updateStatus(UpdateAppointmentStatusRequest $request, Appointment $appointment)
     {
         $this->authorize('manage', $appointment);
 
-        $request->validate(['status' => 'required|in:confirmed,cancelled']);
+        $error = $this->appointmentService->updateStatus(
+            $appointment,
+            $request->validated('status')
+        );
 
-        if ($appointment->status === 'cancelled') {
-            return back()->with('error', 'This appointment was already cancelled.');
+        if ($error !== null) {
+            return back()->with('error', $error);
         }
 
-        $appointment->update(['status' => $request->status]);
-        return back()->with('alert', 'Status updated to ' . $request->status);
+        return back()->with('alert', 'Status updated to ' . $request->validated('status'));
     }
 
     public function edit(Appointment $appointment)
     {
         $this->authorize('update', $appointment);
 
-        if ($appointment->status !== 'pending') {
-            return redirect('/dashboard')->with('error', 'Cannot edit a ' . $appointment->status . ' appointment.');
+        $error = $this->appointmentService->editError($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
-        $doctors = User::where('role', 'doctor')->select('id', 'name')->get();
+        $doctors = $this->appointmentQueryService->getDoctorsForSelect();
+
         return view('appointments.edit', compact('appointment', 'doctors'));
     }
 
-    public function update(Request $request, Appointment $appointment)
+    public function update(UpdateAppointmentRequest $request, Appointment $appointment)
     {
         $this->authorize('update', $appointment);
 
-        if ($appointment->status !== 'pending') {
-            return redirect('/dashboard')->with('error', 'Doctor has already processed this appointment.');
+        $error = $this->appointmentService->update($appointment, $request->validated());
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
-        $attributes = $request->validate([
-            'doctor_id' => ['required', 'exists:users,id,role,doctor'],
-            'appointment_time' => ['required', 'date', 'after:now'],
-            'reason' => ['required', 'string', 'min:5', 'max:1000'],
-        ]);
-
-        $appointment->update($attributes);
         return redirect('/dashboard')->with('alert', 'Appointment updated!');
     }
 
@@ -113,11 +105,12 @@ class AppointmentController extends Controller
     {
         $this->authorize('delete', $appointment);
 
-        if ($appointment->status !== 'pending') {
-            return redirect('/dashboard')->with('error', 'Too late! Status is already ' . $appointment->status);
+        $error = $this->appointmentService->cancel($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
-        $appointment->update(['status' => 'cancelled']);
         return back()->with('alert', 'Appointment cancelled.');
     }
 
@@ -125,37 +118,39 @@ class AppointmentController extends Controller
     {
         $this->authorize('manage', $appointment);
 
-        if ($appointment->status !== 'confirmed') {
-            return redirect('/dashboard')->with('error', 'Consultation cannot be accessed at this state.');
+        $error = $this->appointmentService->canAccessConsultation($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
         return view('doctor.consultation', compact('appointment'));
     }
 
-    public function completeConsultation(Request $request, Appointment $appointment)
+    public function completeConsultation(CompleteConsultationRequest $request, Appointment $appointment)
     {
         $this->authorize('manage', $appointment);
 
-        if ($appointment->status !== 'confirmed') {
-            return redirect('/dashboard')->with('error', 'Only confirmed appointments can be completed.');
+        $error = $this->appointmentService->completeConsultation(
+            $appointment,
+            $request->validated()
+        );
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
-        $attributes = $request->validate([
-            'symptoms' => 'required|string|min:5',
-            'diagnosis' => 'required|string|min:5',
-            'prescription' => 'required|string|min:3',
-        ]);
-
-        $appointment->update(array_merge($attributes, ['status' => 'completed']));
         return redirect('/dashboard')->with('alert', 'Consultation finalized.');
     }
 
     public function showRecord(Appointment $appointment)
     {
-        $this->authorize('viewRecord', $appointment);
+        $this->authorize('view', $appointment);
 
-        if ($appointment->status !== 'completed') {
-            return redirect('/dashboard')->with('error', 'Record not yet finalized.');
+        $error = $this->appointmentService->viewRecordError($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
         return view('appointments.record', compact('appointment'));

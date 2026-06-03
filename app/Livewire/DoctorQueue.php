@@ -2,32 +2,36 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\Appointment;
+use App\Livewire\Concerns\GuardsInvalidPagination;
+use App\Services\AppointmentQueryService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 class DoctorQueue extends Component
 {
+    use GuardsInvalidPagination;
     use WithPagination;
-    // The render method runs every time the component "polls"
+
+    protected AppointmentQueryService $appointmentQueryService;
+
+    public function boot(AppointmentQueryService $appointmentQueryService): void
+    {
+        $this->appointmentQueryService = $appointmentQueryService;
+    }
+
     public function render()
     {
-        // untuk pagination
-        $appointments = Appointment::where ('doctor_id', Auth::id())
-            ->with('patient')
-            ->orderBy('appointment_time', 'asc')
-            ->paginate(5);
-        return view('livewire.doctor-queue', [
-            'appointments' => $appointments
-        ]);
-        // $appointments = Appointment::where('doctor_id', Auth::id())
-        //     ->with('patient')
-        //     ->orderBy('appointment_time', 'asc')
-        //     ->get();
+        $doctorId = Auth::id();
+        $perPage = 5;
 
-        // return view('livewire.doctor-queue', [
-        //     'appointments' => $appointments
-        // ]);
+        $appointments = $this->ensureValidPage(
+            $this->appointmentQueryService->getDoctorAppointments($doctorId, $perPage, $this->getPage()),
+            fn () => $this->appointmentQueryService->getDoctorAppointments($doctorId, $perPage, 1)
+        );
+
+        return view('livewire.doctor-queue', [
+            'appointments' => $appointments,
+        ]);
     }
 }

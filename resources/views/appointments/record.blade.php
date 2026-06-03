@@ -1,3 +1,5 @@
+@inject('appointmentService', App\Services\AppointmentService::class)
+
 <x-layout title="Medical Record">
     <x-return to="dashboard" />
 
@@ -28,7 +30,7 @@
             </div>
             <div>
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Status</label>
-                <span class="inline-block px-2 py-0.5 {{ $appointment->status === 'completed' ? 'bg-emerald-500' : 'bg-amber-500' }} text-white text-[9px] font-black rounded uppercase">
+                <span class="inline-block px-2 py-0.5 {{ $appointmentService->isCompleted($appointment) ? 'bg-emerald-500' : 'bg-amber-500' }} text-white text-[9px] font-black rounded uppercase">
                     {{ ucfirst($appointment->status) }}
                 </span>
             </div>

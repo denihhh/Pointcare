@@ -2,31 +2,36 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\Appointment;
-use Livewire\WithPagination;
+use App\Livewire\Concerns\GuardsInvalidPagination;
+use App\Services\AppointmentQueryService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class PatientAppointments extends Component
 {
+    use GuardsInvalidPagination;
     use WithPagination;
+
+    protected AppointmentQueryService $appointmentQueryService;
+
+    public function boot(AppointmentQueryService $appointmentQueryService): void
+    {
+        $this->appointmentQueryService = $appointmentQueryService;
+    }
+
     public function render()
     {
-        // untuk pagination
-        $appointments = Appointment::where ('patient_id', Auth::id())
-            ->with('doctor')
-            ->orderBy('appointment_time', 'asc')
-            ->paginate(5);
-        return view('livewire.patient-appointments', [
-            'appointments' => $appointments
-        ]);
-        // $appointments = Appointment::where('patient_id', Auth::id())
-        //     ->with('doctor')
-        //     ->orderBy('appointment_time', 'asc')
-        //     ->get();
+        $patientId = Auth::id();
+        $perPage = 5;
 
-        // return view('livewire.patient-appointments', [
-        //     'appointments' => $appointments
-        // ]);
+        $appointments = $this->ensureValidPage(
+            $this->appointmentQueryService->getPatientAppointments($patientId, $perPage, $this->getPage()),
+            fn () => $this->appointmentQueryService->getPatientAppointments($patientId, $perPage, 1)
+        );
+
+        return view('livewire.patient-appointments', [
+            'appointments' => $appointments,
+        ]);
     }
 }

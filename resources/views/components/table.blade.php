@@ -1,3 +1,4 @@
+@inject('appointmentService', App\Services\AppointmentService::class)
 
 <div class="overflow-x-auto">
     <table class="w-full text-left border-separate border-spacing-y-3">
@@ -43,10 +44,10 @@
                     <div class="flex items-center justify-end space-x-3">
                         <span
                             class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border
-                        {{ $appointment->status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : '' }}
-                        {{ $appointment->status === 'confirmed' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : '' }}
-                        {{ $appointment->status === 'cancelled' ? 'bg-rose-50 text-rose-600 border-rose-100' : '' }}
-                        {{ $appointment->status === 'completed' ? 'bg-slate-100 text-slate-600 border-slate-200' : '' }}">
+                        {{ $appointmentService->isPending($appointment) ? 'bg-amber-50 text-amber-600 border-amber-100' : '' }}
+                        {{ $appointmentService->isConfirmed($appointment) ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : '' }}
+                        {{ $appointmentService->isCancelled($appointment) ? 'bg-rose-50 text-rose-600 border-rose-100' : '' }}
+                        {{ $appointmentService->isCompleted($appointment) ? 'bg-slate-100 text-slate-600 border-slate-200' : '' }}">
                             {{ $appointment->status }}
                         </span>
                         <svg class="w-4 h-4 text-slate-300 transition-transform duration-300"
@@ -71,7 +72,7 @@
                         </div>
 
                         <div class="flex items-center space-x-3 shrink-0">
-                            @if ($role === 'doctor' && $appointment->status === 'pending')
+                            @if ($role === 'doctor' && $appointmentService->isPending($appointment))
                                 <div class="flex items-center space-x-2">
                                     <form action="/appointments/{{ $appointment->id }}/status" method="POST">
                                         @csrf @method('PATCH')
@@ -96,7 +97,7 @@
 
                                 </div>
                             @endif
-                            @if ($appointment->status === 'completed')
+                            @if ($appointmentService->isCompleted($appointment))
                                 <a href="/appointments/{{ $appointment->id }}/record"
                                     class="flex items-center px-5 py-2.5 bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-rose-600 transition-all shadow-md">
                                     <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,14 +108,14 @@
                                 </a>
                             @endif
 
-                            @if ($role === 'doctor' && $appointment->status === 'confirmed')
+                            @if ($role === 'doctor' && $appointmentService->isConfirmed($appointment))
                                 <a href="/consultation/{{ $appointment->id }}"
                                     class="px-5 py-2.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-rose-500 transition-all shadow-md">
                                     Start Consultation
                                 </a>
                             @endif
 
-                            @if ($role === 'patient' && $appointment->status === 'pending')
+                            @if ($role === 'patient' && $appointmentService->isPending($appointment))
                                 <a href="/appointments/{{ $appointment->id }}/edit"
                                     class="px-4 py-2 text-slate-600 bg-white border border-slate-200 text-[10px] font-bold uppercase rounded-xl hover:bg-slate-50 transition-all">
                                     Edit Details
