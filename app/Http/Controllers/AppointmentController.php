@@ -2,79 +2,157 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AvailableSlotsRequest;
+use App\Http\Requests\CompleteConsultationRequest;
+use App\Http\Requests\StoreAppointmentRequest;
+use App\Http\Requests\UpdateAppointmentRequest;
+use App\Http\Requests\UpdateAppointmentStatusRequest;
 use App\Models\Appointment;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Services\AppointmentQueryService;
+use App\Services\AppointmentService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
-    public function create(){
-        $doctors = User::where('role', 'doctor')->get();
+    use AuthorizesRequests;
+
+    public function __construct(
+        private AppointmentService $appointmentService,
+        private AppointmentQueryService $appointmentQueryService
+    ) {}
+
+    public function getAvailableSlots(AvailableSlotsRequest $request)
+    {
+        $this->authorize('create', Appointment::class);
+
+        $validated = $request->validated();
+
+        $slots = $this->appointmentQueryService->getAvailableSlots(
+            (int) $validated['doctor_id'],
+            $validated['date']
+        );
+
+        return response()->json($slots);
+    }
+
+    public function create()
+    {
+        $this->authorize('create', Appointment::class);
+
+        $doctors = $this->appointmentQueryService->getDoctorsForSelect();
+
         return view('appointments.create', compact('doctors'));
     }
 
-    public function store(Request $request){
-        $attributes = $request->validate([
-            'doctor_id' => ['required', 'exists:users,id'],
-            'appointment_time' => ['required', 'date', 'after:now'],
-            'reason' => ['required', 'string', 'max:1000']
-        ]);
-
-        $attributes['patient_id'] = Auth::id();
-        $attributes['status'] = 'pending';
-
-        Appointment::create($attributes);
-
-        return redirect('/dashboard')->with('success', 'Appointment booked successfully and is pending confirmation.');
-
-    }
-
-    public function updateStatus(Request $request, Appointment $appointment)
+    public function store(StoreAppointmentRequest $request)
     {
-        if(Auth::user()->id !== $appointment->doctor_id){
-            abort(403);
-        }
+        $this->authorize('create', Appointment::class);
 
-        $appointment->update([
-            'status'=> $request->status
-        ]);
-        return back()->with('success', 'Appointment status updated successfully.');
+        $this->appointmentService->create(
+            $request->validated(),
+            Auth::id()
+        );
+
+        return redirect('/dashboard')->with('alert', 'Appointment booked successfully.');
     }
 
-    public function edit(Appointment $appointment){
-        $doctors = User::where('role', 'doctor')->get();
+    public function updateStatus(UpdateAppointmentStatusRequest $request, Appointment $appointment)
+    {
+        $this->authorize('manage', $appointment);
 
-        if($appointment->patient_id !== Auth::id()){
-            abort(403);
+        $error = $this->appointmentService->updateStatus(
+            $appointment,
+            $request->validated('status')
+        );
+
+        if ($error !== null) {
+            return back()->with('error', $error);
         }
-        return view('appointments.edit', compact('appointment','doctors'));
+
+        return back()->with('alert', 'Status updated to ' . $request->validated('status'));
     }
 
-    public function update(Request $request, Appointment $appointment){
-        if($appointment->patient_id !== Auth::id()){
-            abort(403);
+    public function edit(Appointment $appointment)
+    {
+        $this->authorize('update', $appointment);
+
+        $error = $this->appointmentService->editError($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
-        $attributes= $request->validate([
-            'doctor_id'=>['required', 'exists:users,id'],
-            'appointment_time'=>['required', 'date', 'after:now'],
-            'reason'=>['required', 'string', 'max:1000']
-        ]);
+        $doctors = $this->appointmentQueryService->getDoctorsForSelect();
 
-        $appointment->update($attributes);
-
-        return redirect('/dashboard')->with('success', 'Appointment updated successfully.');
+        return view('appointments.edit', compact('appointment', 'doctors'));
     }
 
-    public function destroy(Appointment $appointment){
+    public function update(UpdateAppointmentRequest $request, Appointment $appointment)
+    {
+        $this->authorize('update', $appointment);
 
-        if($appointment->patient_id!== Auth::id()){
-            abort(403);
+        $error = $this->appointmentService->update($appointment, $request->validated());
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
         }
 
-        $appointment->update(['status'=>'cancelled']);
+        return redirect('/dashboard')->with('alert', 'Appointment updated!');
+    }
 
-        return redirect('/dashboard')->with('success', 'Appointment cancelled successfully.');
+    public function destroy(Appointment $appointment)
+    {
+        $this->authorize('delete', $appointment);
+
+        $error = $this->appointmentService->cancel($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
+        }
+
+        return back()->with('alert', 'Appointment cancelled.');
+    }
+
+    public function consultation(Appointment $appointment)
+    {
+        $this->authorize('manage', $appointment);
+
+        $error = $this->appointmentService->canAccessConsultation($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
+        }
+
+        return view('doctor.consultation', compact('appointment'));
+    }
+
+    public function completeConsultation(CompleteConsultationRequest $request, Appointment $appointment)
+    {
+        $this->authorize('manage', $appointment);
+
+        $error = $this->appointmentService->completeConsultation(
+            $appointment,
+            $request->validated()
+        );
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
+        }
+
+        return redirect('/dashboard')->with('alert', 'Consultation finalized.');
+    }
+
+    public function showRecord(Appointment $appointment)
+    {
+        $this->authorize('view', $appointment);
+
+        $error = $this->appointmentService->viewRecordError($appointment);
+
+        if ($error !== null) {
+            return redirect('/dashboard')->with('error', $error);
+        }
+
+        return view('appointments.record', compact('appointment'));
     }
 }

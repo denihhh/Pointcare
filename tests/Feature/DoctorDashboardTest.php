@@ -11,7 +11,7 @@ it('allows a doctor to see the doctor dashboard', function () {
         ->get('/dashboard')
         ->assertStatus(200)
         ->assertViewIs('doctor.dashboard') // Specifically checks if it loaded the doctor view
-        ->assertSee('Doctor Queue');    // Checks for text only a doctor should see
+        ->assertSee('Clinical Queue');    // Checks for text only a doctor should see
 });
 
 it('prevents a patient from seeing the doctor dashboard view', function () {

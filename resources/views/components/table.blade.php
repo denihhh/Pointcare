@@ -1,93 +1,145 @@
-<table class="w-full text-left border-collapse">
-    <thead>
-        <tr class="border-b-2 border-gray-100 text-gray-600 font-semibold">
-            <th class="py-4 px-2">{{ $role === 'doctor' ? 'Patient Name' : 'Doctor Name' }}</th>
-            <th class="py-4 px-2">Date & Time</th>
-            <th class="py-4 px-2">Reason</th>
-            @if ($role === 'patient')
-                <th class="py-4 px-2">Status</th>
-            @endif
-            @if ($role === 'doctor')
-                <th class="py-4 px-2">Actions</th>
-            @endif
-        </tr>
-    </thead>
-    <tbody>
+@inject('appointmentService', App\Services\AppointmentService::class)
+
+<div class="overflow-x-auto">
+    <table class="w-full text-left border-separate border-spacing-y-3">
+        <thead>
+            <tr class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black">
+                <th class="pb-4 px-4">{{ $role === 'doctor' ? 'Patient' : 'Doctor' }}</th>
+                <th class="pb-4 px-4">Schedule</th>
+                <th class="pb-4 px-4">Consultation Reason</th>
+                <th class="pb-4 px-4 text-right">Status</th>
+            </tr>
+        </thead>
         @foreach ($appointments as $appointment)
-            <tr class="border-b border-gray-50">
-                <td class="py-4 px-2 text-gray-600 font-medium">
-                    {{ $role === 'doctor' ? $appointment->patient->name : 'Dr. ' . $appointment->doctor->name }}
+        <tbody x-data="{ expanded: false }">
+            <tr @click="expanded = !expanded"
+                class="group bg-white hover:bg-slate-50/50 hover:cursor-pointer transition-all duration-200">
+
+                <td class="py-5 px-4 first:rounded-l-2xl border-y border-l border-slate-50">
+                    <div class="flex items-center">
+                        <div
+                            class="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs mr-3 border border-slate-200">
+                            {{ substr($role === 'doctor' ? $appointment->patient->name : $appointment->doctor->name, 0, 1) }}
+                        </div>
+                        <span class="text-sm font-bold text-slate-700">
+                            {{ $role === 'doctor' ? $appointment->patient->name : 'Dr. ' . $appointment->doctor->name }}
+                        </span>
+                    </div>
                 </td>
-                <td class="py-4 px-2 text-gray-600">
-                    {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('d M, h:i A') }}
+
+                <td class="py-5 px-4 border-y border-slate-50">
+                    <div class="flex flex-col">
+                        <span
+                            class="text-sm font-bold text-slate-600">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('d M Y') }}</span>
+                        <span
+                            class="text-[11px] text-slate-400 font-medium">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</span>
+                    </div>
                 </td>
-                <td class="py-4 px-2 text-gray-600">{{ $appointment->reason }}</td>
 
-                @if ($role === 'doctor' && $appointment->status === 'pending')
-                    <td class="py-4 px-2 flex space-x-2">
-                        <form action="/appointments/{{ $appointment->id }}/status" method="POST">
-                            @csrf
-                            @method('PATCH')
-                            <input type="hidden" name="status" value="confirmed">
-                            <button
-                                class="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">Confirm</button>
-                        </form>
+                <td class="py-5 px-4 border-y border-slate-50">
+                    <p class="text-sm text-slate-500 line-clamp-1 max-w-[150px]">{{ $appointment->reason }}</p>
+                </td>
 
-                        <form action="/appointments/{{ $appointment->id }}/status" method="POST">
-                            @csrf
-                            @method('PATCH')
-                            <input type="hidden" name="status" value="cancelled">
-                            <button
-                                class="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Cancel</button>
-                        </form>
-                    </td>
-                @else
-                    <td class="py-4 px-3 align-middle">
-                        <div class="flex items-center justify-between space-x-4">
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium tracking-wider uppercase
-            {{ $appointment->status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-200' : '' }}
-            {{ $appointment->status === 'confirmed' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : '' }}
-            {{ $appointment->status === 'cancelled' ? 'bg-rose-50 text-rose-700 border border-rose-200' : '' }}">
-                                <svg class="mr-1.5 h-2 w-2 {{ $appointment->status === 'pending' ? 'text-amber-400' : ($appointment->status === 'confirmed' ? 'text-emerald-400' : 'text-rose-400') }}"
-                                    fill="currentColor" viewBox="0 0 8 8">
-                                    <circle cx="4" cy="4" r="3" />
-                                </svg>
-                                {{ $appointment->status }}
-                            </span>
+                <td class="py-5 px-4 last:rounded-r-2xl border-y border-r border-slate-50 text-right">
+                    <div class="flex items-center justify-end space-x-3">
+                        <span
+                            class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border
+                        {{ $appointmentService->isPending($appointment) ? 'bg-amber-50 text-amber-600 border-amber-100' : '' }}
+                        {{ $appointmentService->isConfirmed($appointment) ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : '' }}
+                        {{ $appointmentService->isCancelled($appointment) ? 'bg-rose-50 text-rose-600 border-rose-100' : '' }}
+                        {{ $appointmentService->isCompleted($appointment) ? 'bg-slate-100 text-slate-600 border-slate-200' : '' }}">
+                            {{ $appointment->status }}
+                        </span>
+                        <svg class="w-4 h-4 text-slate-300 transition-transform duration-300"
+                            :class="expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </td>
+            </tr>
 
-                            @if ($role === 'patient' && $appointment->status === 'pending')
-                                <div class="flex items-center space-x-3">
-                                    <a href="/appointments/{{ $appointment->id }}/edit"
-                                        class="text-blue-600 hover:text-blue-800 transition-colors p-1 hover:bg-blue-50 rounded"
-                                        title="Edit Appointment">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                        </svg>
-                                    </a>
+            <tr x-show="expanded" x-cloak x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2">
+                <td colspan="4" class="px-4 pb-4">
+                    <div
+                        class="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-inner flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 
-                                    <form action="/appointments/{{ $appointment->id }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to cancel this appointment?')">
-                                        @csrf
-                                        @method('DELETE')
+                        <div class="flex-1">
+                            <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Full
+                                Appointment Reason</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed italic">"{{ $appointment->reason }}"</p>
+                        </div>
+
+                        <div class="flex items-center space-x-3 shrink-0">
+                            @if ($role === 'doctor' && $appointmentService->isPending($appointment))
+                                <div class="flex items-center space-x-2">
+                                    <form action="/appointments/{{ $appointment->id }}/status" method="POST">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="confirmed">
+                                        <button
+                                            class="px-4 py-2 text-slate-800 hover:text-slate-700 bg-emerald-300 hover:bg-emerald-400 hover:cursor-pointer text-[10px] shadow-sm font-bold uppercase rounded-xl transition-all">
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form action="/appointments/{{ $appointment->id }}/status" method="POST">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button
+                                            class="p-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 shadow-sm transition-transform active:scale-90">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+
+                                </div>
+                            @endif
+                            @if ($appointmentService->isCompleted($appointment))
+                                <a href="/appointments/{{ $appointment->id }}/record"
+                                    class="flex items-center px-5 py-2.5 bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-rose-600 transition-all shadow-md">
+                                    <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    View Full Medical Record
+                                </a>
+                            @endif
+
+                            @if ($role === 'doctor' && $appointmentService->isConfirmed($appointment))
+                                <a href="/consultation/{{ $appointment->id }}"
+                                    class="px-5 py-2.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-rose-500 transition-all shadow-md">
+                                    Start Consultation
+                                </a>
+                            @endif
+
+                            @if ($role === 'patient' && $appointmentService->isPending($appointment))
+                                <a href="/appointments/{{ $appointment->id }}/edit"
+                                    class="px-4 py-2 text-slate-600 bg-white border border-slate-200 text-[10px] font-bold uppercase rounded-xl hover:bg-slate-50 transition-all">
+                                    Edit Details
+                                </a>
+                                <form action="/appointments/{{ $appointment->id }}" method="POST"
+                                        onsubmit="return confirm('Cancel this appointment?')">
+                                        @csrf @method('DELETE')
                                         <button type="submit"
-                                            class="text-red-600 hover:text-red-800 transition-colors p-1 hover:bg-red-50 rounded"
-                                            title="Cancel Appointment">
+                                            class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
                                         </button>
                                     </form>
-                                </div>
                             @endif
                         </div>
-                    </td>
-                @endif
+                    </div>
+                </td>
             </tr>
+        </tbody>
         @endforeach
-    </tbody>
-</table>
+
+    </table>
+</div>
+

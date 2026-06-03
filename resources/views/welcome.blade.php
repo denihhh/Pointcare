@@ -8,7 +8,7 @@
             :pendingCount="$pendingCount"
             />
         @else
-            <div class="relative pt-16 pb-32">
+            <div class="-mt-4 relative pt-16 pb-32">
                 <div class="max-w-7xl mx-auto px-6 lg:px-8">
                     <div class="lg:grid lg:grid-cols-12 lg:gap-8">
 
@@ -28,7 +28,7 @@
                                     experience. Manage appointments, clinical records, and patient queues in one centralized
                                     dashboard.
                                 </p>
-                                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                                <div class="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
                                     <a href="/register"
                                         class="flex items-center justify-center px-8 py-4 text-base font-bold rounded-2xl text-white bg-slate-900 hover:bg-slate-800 shadow-xl transition-all hover:-translate-y-1">
                                         Get Started Free
