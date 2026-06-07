@@ -1,22 +1,38 @@
 <x-layout.layout title="Login">
+    
+    <div class="flex items-center justify-center px-4 relative ">
+        <div class="relative z-10 w-full max-w-md">
 
-    <x-form title="Log in to Your Account" description="Welcome back! Please enter your details.">
+            <x-form
+                title="Login"
+                description="Welcome back! Please enter your details."
+            >
 
-        <form action="/login" method="POST" class="mt-10 space-y-6">
-            @csrf
 
-            <x-form.field name="email" label="Email" type="email" placeholder="email@example.com" />
-            <x-form.field name="password" label="Password" type="password" />
+                <form action="/login" method="POST" class="space-y-6">
+                    @csrf
 
-            <button type="submit"
-                data-test="login-button"
-                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-2xl shadow-lg shadow-rose-200 text-sm font-black text-white bg-rose-500 hover:bg-rose-600 transition-all hover:-translate-y-0.5 active:translate-y-0">
-                Sign In
-            </button>
-        </form>
-            <p class="text-center text-sm mt-8 text-slate-500">New to our platform? <a href="/register"
-                class="font-bold text-rose-600 hover:text-rose-700 transition-colors underline underline-offset-4 decoration-rose-100">
-                Register</a> now.</p>
+                    <x-form.field name="email" label="Email" type="email" placeholder="email@example.com" />
+                    <x-form.field name="password" label="Password" type="password" />
 
-    </x-form>
+                    <button type="submit"
+                        class="w-full py-3 px-4 rounded-2xl bg-primary text-white font-black shadow-md hover:opacity-90 transition">
+                        Sign In
+                    </button>
+
+                </form>
+
+                <p class="text-center text-sm mt-6 text-text-secondary">
+                    New here?
+                    <a href="/register" class="text-primary font-bold underline underline-offset-4">
+                        Create account
+                    </a>
+                </p>
+
+            </x-form>
+
+        </div>
+
+    </div>
+
 </x-layout.layout>

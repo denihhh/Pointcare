@@ -1,4 +1,6 @@
-@props(['title' => 'Smart Clinic'])
+@props([
+    'title' => 'Smart Clinic'
+])
 <!DOCTYPE html>
 <html lang="en" class="h-full" data-theme="corporate">
 <head >
@@ -15,7 +17,7 @@
 
     <div class="mx-auto min-h-screen flex flex-col">
         <x-layout.nav />
-        <main class=" mt-8 grow">
+        <main class=" grow">
             {{$slot}}
         </main>
     </div>
