@@ -1,14 +1,13 @@
 <x-layout.layout title="Login">
     
-    <div class="flex items-center justify-center px-4 relative ">
-        <div class="relative z-10 w-full max-w-md">
+    {{-- Unified Layout Wrapper: Pushes down comfortably from the navbar --}}
+    <div class="w-full flex flex-col items-center pt-16 md:pt-24 px-4 pb-12">
+        <div class="w-full max-w-md">
 
             <x-form
                 title="Login"
                 description="Welcome back! Please enter your details."
             >
-
-
                 <form action="/login" method="POST" class="space-y-6">
                     @csrf
 
@@ -19,10 +18,9 @@
                         class="w-full py-3 px-4 rounded-2xl bg-primary text-white font-black shadow-md hover:opacity-90 transition">
                         Sign In
                     </button>
-
                 </form>
 
-                <p class="text-center text-sm mt-6 text-text-secondary">
+                <p class="text-center text-sm mt-6 text-muted-foreground">
                     New here?
                     <a href="/register" class="text-primary font-bold underline underline-offset-4">
                         Create account
@@ -32,7 +30,6 @@
             </x-form>
 
         </div>
-
     </div>
 
 </x-layout.layout>

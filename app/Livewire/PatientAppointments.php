@@ -27,7 +27,7 @@ class PatientAppointments extends Component
 
         $appointments = $this->ensureValidPage(
             $this->appointmentQueryService->getPatientAppointments($patientId, $perPage, $this->getPage()),
-            fn () => $this->appointmentQueryService->getPatientAppointments($patientId, $perPage, 1)
+            fn() => $this->appointmentQueryService->getPatientAppointments($patientId, $perPage, 1)
         );
 
         return view('livewire.patient-appointments', [

@@ -104,3 +104,56 @@ it('denies unauthorized users from viewing clinical records', function () {
         ->get("/appointments/{$appointment->id}/record")
         ->assertStatus(403);
 });
+
+it('displays the past 3 appointments on the homepage for a patient', function () {
+    $patient = User::factory()->create(['role' => 'patient']);
+    $doctor = User::factory()->create(['role' => 'doctor']);
+    
+    // Create 4 past appointments
+    Appointment::factory()->count(4)->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'appointment_time' => now()->subDays(5),
+        'status' => 'completed',
+        'reason' => 'Completed Visit'
+    ]);
+
+    $response = $this->actingAs($patient)->get('/');
+
+    $response->assertStatus(200);
+    $response->assertSee('Past Appointments');
+    
+    $response->assertViewHas('pastAppointments', function ($appointments) {
+        return $appointments->count() === 3;
+    });
+});
+
+it('displays the health ledger page for patients containing only completed appointments', function () {
+    $patient = User::factory()->create(['role' => 'patient']);
+    $doctor = User::factory()->create(['role' => 'doctor']);
+
+    Appointment::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'appointment_time' => now()->subDays(2),
+        'status' => 'completed',
+        'diagnosis' => 'Allergic Rhinitis',
+        'prescription' => 'Claritin 10mg'
+    ]);
+
+    Appointment::factory()->create([
+        'patient_id' => $patient->id,
+        'doctor_id' => $doctor->id,
+        'appointment_time' => now()->addDays(2),
+        'status' => 'pending',
+        'diagnosis' => 'Not Completed yet'
+    ]);
+
+    $response = $this->actingAs($patient)->get('/records');
+
+    $response->assertStatus(200);
+    $response->assertSee('Health Ledger');
+    $response->assertSee('Allergic Rhinitis');
+    $response->assertSee('Claritin 10mg');
+    $response->assertDontSee('Not Completed yet');
+});

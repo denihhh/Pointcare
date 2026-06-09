@@ -1,6 +1,6 @@
 <x-layout.layout title="Register">
-    <div class="min-h-screen flex items-center justify-center px-4 relative ">
-        <div class="relative z-10 w-full max-w-md">
+    <div class="w-full flex flex-col items-center pt-16 md:pt-24 px-4 pb-12">
+        <div class="w-full max-w-md">
         <x-form title="Sign Up" description="Start your appointment today!">
 
             <form action="/register" method="POST" class="mt-8 space-y-6">

@@ -31,4 +31,17 @@ class DashboardController extends Controller
             ->get();
         return view('patient.dashboard', compact('appointments'));
     }
+
+    public function records()
+    {
+        $user = Auth::user();
+
+        $appointments = Appointment::where('patient_id', $user->id)
+            ->where('status', 'completed')
+            ->with(['doctor.doctor'])
+            ->orderBy('appointment_time', 'desc')
+            ->get();
+
+        return view('patient.records', compact('appointments'));
+    }
 }

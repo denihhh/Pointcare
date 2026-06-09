@@ -43,6 +43,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
     Route::get('/appointments/{appointment}/edit', [AppointmentController::class, 'edit']);
     Route::patch('/appointments/{appointment}', [AppointmentController::class, 'update']);
     Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy']);
+    Route::get('/records', [DashboardController::class, 'records'])->name('records');
 });
 
 Route::get('/api/available-slots', [AppointmentController::class, 'getAvailableSlots'])->middleware('auth');
@@ -59,7 +60,6 @@ Route::get('/appointments/{appointment}/record', [AppointmentController::class, 
 
 //Profile Route
 Route::get('/profile', fn() => view('profile.profile'))->middleware('auth');
-
 /*
 app/Http/Controllers/
 ├── Auth/

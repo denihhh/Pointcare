@@ -1,4 +1,4 @@
-@props(['upcomingAppointment' => null, 'todayCount' => 0, 'pendingCount' => 0])
+@props(['upcomingAppointment' => null, 'todayCount' => 0, 'pendingCount' => 0, 'pastAppointments' => collect()])
 
 <x-animation>
     @if (auth()->user()->role === 'patient')
@@ -6,7 +6,7 @@
             <div
                 class="flex flex-col md:flex-row md:items-center md:justify-between mb-10 space-y-4 md:space-y-0 pb-6 border-b border-gray-300">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hello, {{ auth()->user()->name }}
+                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hello, {{ Str::before(auth()->user()->name, ' ') }}
                     </h1>
                     <p class="text-slate-500 mt-1">Welcome back to PointCare. Here is your health overview.</p>
                 </div>
@@ -85,6 +85,65 @@
                             @endforeach
                         </div>
                     </section>
+
+                    <section>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-bold text-slate-800">Past Appointments</h2>
+                            <span class="text-xs font-semibold text-slate-450">Recent History</span>
+                        </div>
+
+                        @if ($pastAppointments->isEmpty())
+                            <div class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center">
+                                <p class="text-slate-400 font-medium italic">No past appointments recorded.</p>
+                            </div>
+                        @else
+                            <div class="space-y-4">
+                                @foreach ($pastAppointments as $appointment)
+                                    <div class="group bg-white border border-slate-100 rounded-2xl p-5 hover:shadow-md hover:border-slate-250 transition-all duration-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="shrink-0 w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-600 font-bold text-lg">
+                                                {{ substr($appointment->doctor->name, 0, 1) }}
+                                            </div>
+                                            <div>
+                                                <h4 class="text-base font-bold text-slate-800">Dr. {{ $appointment->doctor->name }}</h4>
+                                                <p class="text-xs text-slate-500 font-medium mt-0.5">
+                                                    {{ $appointment->appointment_time->format('d M Y') }} at {{ $appointment->appointment_time->format('h:i A') }}
+                                                </p>
+                                                @if($appointment->reason)
+                                                    <p class="text-xs text-slate-450 italic mt-1 line-clamp-1">
+                                                        "{{ Str::limit($appointment->reason, 60) }}"
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center space-x-3 self-end sm:self-auto">
+                                            @if ($appointment->status === 'completed')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                                    Completed
+                                                </span>
+                                                <a href="/appointments/{{ $appointment->id }}/record" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-bold rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-sm">
+                                                    View Record
+                                                </a>
+                                            @elseif ($appointment->status === 'cancelled')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 border border-rose-100">
+                                                    Cancelled
+                                                </span>
+                                            @elseif ($appointment->status === 'confirmed')
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-green-50 text-green-600 border border-green-100">
+                                                    Confirmed
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-100">
+                                                    Pending
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </section>
                 </div>
 
                 <div class="space-y-8">
@@ -122,7 +181,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 border-b border-gray-300">
                 <div>
-                    <h1 class="text-4xl font-black text-slate-900 mt-1">Welcome, Dr. {{ auth()->user()->name }}</h1>
+                    <h1 class="text-4xl font-black text-slate-900 mt-1">Welcome, Dr. {{ Str::before(auth()->user()->name, ' ') }}</h1>
                     <p class="text-slate-500 mt-2 text-lg">
                         You have
                         <span class="text-slate-900 font-bold">

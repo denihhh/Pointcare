@@ -4,6 +4,7 @@
         @auth
             <x-layout.homepage
             :upcomingAppointment="$upcomingAppointment"
+            :pastAppointments="$pastAppointments"
             :todayCount="$todayCount"
             :pendingCount="$pendingCount"
             />
@@ -34,7 +35,7 @@
                                         Get Started Free
                                     </a>
                                     <a href="/login"
-                                        class="flex items-center justify-center px-8 py-4 text-base font-bold rounded-2xl text-white bg-rose-500 hover:bg-rose-600 border border-slate-200 transition-all">
+                                        class="flex items-center justify-center px-8 py-4 text-base font-bold rounded-2xl text-white bg-primary hover:bg-rose-600 border border-slate-200 transition-all">
                                         Member Login
                                     </a>
                                 </div>

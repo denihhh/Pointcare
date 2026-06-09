@@ -82,7 +82,7 @@
             </a>
 
             <a href="/register"
-                class="bg-rose-500 hover:bg-rose-600 text-white text-[11px] sm:text-sm font-black px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap">
+                class="bg-primary hover:bg-rose-600 text-white text-[11px] sm:text-sm font-black px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap">
                 Get Started
             </a>
         </div>

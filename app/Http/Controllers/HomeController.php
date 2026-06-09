@@ -9,6 +9,7 @@ class HomeController extends Controller
     public function index()
     {
         $upcomingAppointment = null;
+        $pastAppointments = collect();
         $todayCount = 0;
         $pendingCount = 0;
 
@@ -19,6 +20,16 @@ class HomeController extends Controller
                 ->where('appointment_time', '>=', now())
                 ->orderBy('appointment_time', 'asc')
                 ->first();
+
+            $pastAppointments = Auth::user()->appointments()
+                ->with('doctor')
+                ->where(function ($query) {
+                    $query->where('appointment_time', '<', now())
+                          ->orWhereIn('status', ['completed', 'cancelled']);
+                })
+                ->orderBy('appointment_time', 'desc')
+                ->take(3)
+                ->get();
         } elseif (Auth::check() && Auth::user()->role === 'doctor') {
             $upcomingAppointment = \App\Models\Appointment::where('doctor_id', Auth::id())
                 ->where('status', 'confirmed')
@@ -37,6 +48,6 @@ class HomeController extends Controller
                 ->count();
         }
 
-        return view('welcome', compact('upcomingAppointment', 'todayCount', 'pendingCount'));
+        return view('welcome', compact('upcomingAppointment', 'pastAppointments', 'todayCount', 'pendingCount'));
     }
 }

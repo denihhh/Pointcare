@@ -7,8 +7,8 @@ new class extends Component {
 };
 ?>
 
-<div wire:poll.2s >
-    
+<div wire:poll.2s>
+
     <div class="mb-8 flex items-center justify-between">
         <h2 class="text-xl font-bold text-slate-800">Your Appointments</h2>
         <a href="/appointments/create" data-test="new-appointment-btn"
@@ -28,6 +28,6 @@ new class extends Component {
     @else
         <x-table :appointments="$appointments" role="patient" />
     @endif
-    {{ $appointments->links('livewire::tailwind', data: ['scrollTo' => '#appointments-table']) }}
+    {{ $appointments->links('livewire::tailwind') }}
     {{-- untuk pagination --}}
 </div>
