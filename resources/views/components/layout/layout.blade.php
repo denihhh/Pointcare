@@ -122,6 +122,7 @@
             @endif
         });
     </script>
+    @livewireScriptConfig
 </body>
 
 </html>

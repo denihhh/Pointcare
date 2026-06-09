@@ -1,11 +1,11 @@
 @php
     if (!isset($scrollTo)) {
-        $scrollTo = '#top';
+        $scrollTo = false;
     }
 
     $scrollIntoViewJsSnippet = ($scrollTo !== false)
         ? <<<JS
-               (\$el.closest('{$scrollTo}') || document.querySelector('{$scrollTo}')).scrollIntoView({ behavior: 'smooth', block: 'start' })
+               (\$el.closest('{$scrollTo}') || document.querySelector('{$scrollTo}'))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
             JS
         : '';
 @endphp

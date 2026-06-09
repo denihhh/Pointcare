@@ -4,7 +4,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
 
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-8 mb-10 gap-y-4">
-            <div>
+            <div id="appointments-scroll-target">
                 <h1 class="text-3xl font-black text-slate-900 tracking-tight">Appointment Portal</h1>
                 <p class="text-slate-500 font-medium mt-1">Manage and track your clinical consultations</p>
             </div>

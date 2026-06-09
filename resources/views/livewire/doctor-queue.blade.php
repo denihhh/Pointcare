@@ -31,6 +31,6 @@ new class extends Component {
         <!-- We call your existing table component here -->
         <x-table :appointments="$appointments" role="doctor" />
     @endif
-    {{ $appointments->links('livewire::tailwind', data: ['scrollTo' => '#appointments-table']) }}
+    {{ $appointments->links('livewire::tailwind', data: ['scrollTo' => '#appointments-scroll-target']) }}
     {{-- untuk pagination --}}
 </div>

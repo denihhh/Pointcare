@@ -4,7 +4,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
 
         <div class="mt-8 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div class="flex-1">
+            <div class="flex-1" id="appointments-scroll-target">
                 <div class="flex items-center space-x-3 mb-2">
                     <span
                         class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
