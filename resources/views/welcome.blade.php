@@ -21,8 +21,8 @@
                                     PointCare
                                 </span>
                                 <h1 class="text-5xl font-black text-slate-900 leading-tight mb-6">
-                                    Healthcare Management <br />
-                                    <span class="text-rose-500">Simplified.</span>
+                                    Smart Healthcare<br />
+                                    <span class="text-rose-500">Management.</span>
                                 </h1>
                                 <p class="text-lg text-slate-500 mb-10 leading-relaxed">
                                     PointCare connects patients and doctors through a seamless, automated booking
@@ -32,7 +32,7 @@
                                 <div class="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
                                     <a href="/register"
                                         class="flex items-center justify-center px-8 py-4 text-base font-bold rounded-2xl text-white bg-slate-900 hover:bg-slate-800 shadow-xl transition-all hover:-translate-y-1">
-                                        Get Started Free
+                                        Get Started
                                     </a>
                                     <a href="/login"
                                         class="flex items-center justify-center px-8 py-4 text-base font-bold rounded-2xl text-white bg-primary hover:bg-rose-600 border border-slate-200 transition-all">

@@ -155,4 +155,129 @@ class AppointmentController extends Controller
 
         return view('appointments.record', compact('appointment'));
     }
+
+    public function schedule(\Illuminate\Http\Request $request)
+    {
+        $doctor = Auth::user();
+        if ($doctor->role !== 'doctor') {
+            abort(403);
+        }
+
+        // Get selected month (default to current month: YYYY-MM)
+        $monthStr = $request->query('month', \Carbon\Carbon::now('Asia/Kuala_Lumpur')->format('Y-m'));
+        try {
+            $currentMonth = \Carbon\Carbon::createFromFormat('Y-m', $monthStr, 'Asia/Kuala_Lumpur');
+        } catch (\Exception $e) {
+            $monthStr = \Carbon\Carbon::now('Asia/Kuala_Lumpur')->format('Y-m');
+            $currentMonth = \Carbon\Carbon::createFromFormat('Y-m', $monthStr, 'Asia/Kuala_Lumpur');
+        }
+
+        // Selected date (default to today if in current month)
+        $selectedDateStr = $request->query('date');
+        if ($selectedDateStr) {
+            try {
+                $selectedDate = \Carbon\Carbon::createFromFormat('Y-m-d', $selectedDateStr, 'Asia/Kuala_Lumpur')->startOfDay();
+            } catch (\Exception $e) {
+                $selectedDate = null;
+            }
+        } else {
+            $selectedDate = null;
+        }
+
+        // Build calendar grid days
+        $startOfCalendar = $currentMonth->copy()->startOfMonth()->startOfWeek(\Carbon\Carbon::SUNDAY);
+        $endOfCalendar = $currentMonth->copy()->endOfMonth()->endOfWeek(\Carbon\Carbon::SATURDAY);
+
+        // Fetch all appointments for this doctor in this calendar range
+        $appointments = Appointment::where('doctor_id', $doctor->id)
+            ->whereBetween('appointment_time', [
+                $startOfCalendar->copy()->startOfDay(),
+                $endOfCalendar->copy()->endOfDay()
+            ])
+            ->with('patient')
+            ->orderBy('appointment_time', 'asc')
+            ->get();
+
+        // Group appointments by date string
+        $appointmentsByDate = $appointments->groupBy(function ($a) {
+            return \Carbon\Carbon::parse($a->appointment_time, 'Asia/Kuala_Lumpur')->format('Y-m-d');
+        });
+
+        // Filtered appointments for display
+        if ($selectedDate) {
+            $filteredAppointments = $appointments->filter(function ($a) use ($selectedDate) {
+                return \Carbon\Carbon::parse($a->appointment_time, 'Asia/Kuala_Lumpur')->isSameDay($selectedDate);
+            });
+        } else {
+            // Show all appointments for the current month
+            $filteredAppointments = $appointments->filter(function ($a) use ($currentMonth) {
+                return \Carbon\Carbon::parse($a->appointment_time, 'Asia/Kuala_Lumpur')->format('Y-m') === $currentMonth->format('Y-m');
+            });
+        }
+
+        // Generate list of days in grid
+        $daysGrid = [];
+        $currentDay = $startOfCalendar->copy();
+        while ($currentDay->lte($endOfCalendar)) {
+            $daysGrid[] = [
+                'date' => $currentDay->copy(),
+                'date_str' => $currentDay->format('Y-m-d'),
+                'day_num' => $currentDay->format('j'),
+                'is_current_month' => $currentDay->format('Y-m') === $currentMonth->format('Y-m'),
+                'is_today' => $currentDay->isToday(),
+                'appointments_count' => isset($appointmentsByDate[$currentDay->format('Y-m-d')]) ? count($appointmentsByDate[$currentDay->format('Y-m-d')]) : 0,
+                'appointments' => isset($appointmentsByDate[$currentDay->format('Y-m-d')]) ? $appointmentsByDate[$currentDay->format('Y-m-d')] : collect(),
+            ];
+            $currentDay->addDay();
+        }
+
+        return view('doctor.schedule', [
+            'daysGrid' => $daysGrid,
+            'currentMonth' => $currentMonth,
+            'prevMonthStr' => $currentMonth->copy()->subMonth()->format('Y-m'),
+            'nextMonthStr' => $currentMonth->copy()->addMonth()->format('Y-m'),
+            'selectedDate' => $selectedDate,
+            'filteredAppointments' => $filteredAppointments,
+        ]);
+    }
+
+    public function patients(\Illuminate\Http\Request $request)
+    {
+        $doctor = Auth::user();
+        if ($doctor->role !== 'doctor') {
+            abort(403);
+        }
+
+        return view('doctor.patients');
+    }
+
+    public function patientDetail(\Illuminate\Http\Request $request, \App\Models\User $patient)
+    {
+        $doctor = Auth::user();
+        if ($doctor->role !== 'doctor') {
+            abort(403);
+        }
+
+        // Ensure this patient actually has appointments with this doctor
+        $appointments = Appointment::where('doctor_id', $doctor->id)
+            ->where('patient_id', $patient->id)
+            ->orderByDesc('appointment_time')
+            ->paginate(5);
+
+        if ($appointments->total() === 0) {
+            abort(404);
+        }
+
+        return view('doctor.patient-detail', compact('patient', 'appointments'));
+    }
+
+    public function clinicalRecords(\Illuminate\Http\Request $request)
+    {
+        $doctor = Auth::user();
+        if ($doctor->role !== 'doctor') {
+            abort(403);
+        }
+
+        return view('doctor.clinical-records');
+    }
 }

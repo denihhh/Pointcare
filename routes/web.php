@@ -52,6 +52,23 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/consultation/{appointment}', [AppointmentController::class, 'consultation'])->name('consultation');
     // Save the EHR and mark as completed
     Route::patch('/consultation/{appointment}/complete', [AppointmentController::class, 'completeConsultation']);
+
+    // Calendar / Schedule page
+    Route::get('/schedule', [AppointmentController::class, 'schedule'])->name('doctor.schedule');
+
+    // Patients page
+    Route::get('/patients', [AppointmentController::class, 'patients'])->name('doctor.patients');
+
+    // Patient detail / consultation history
+    Route::get('/patients/{patient}', [AppointmentController::class, 'patientDetail'])->name('doctor.patient.detail');
+
+    // Unified Clinical Records (replaces medical-records, prescriptions, consultation-notes)
+    Route::get('/clinical-records', [AppointmentController::class, 'clinicalRecords'])->name('doctor.clinical-records');
+
+    // Backward-compatible redirects for old URLs
+    Route::get('/medical-records', fn () => redirect()->route('doctor.clinical-records'));
+    Route::get('/prescriptions', fn () => redirect()->route('doctor.clinical-records'));
+    Route::get('/consultation-notes', fn () => redirect()->route('doctor.clinical-records'));
 });
 
 Route::get('/appointments/{appointment}/record', [AppointmentController::class, 'showRecord'])
