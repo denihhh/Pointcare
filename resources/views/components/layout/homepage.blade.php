@@ -71,7 +71,7 @@
                         @endif
                     </section>
 
-                    <section>
+                    {{-- <section>
                         <h2 class="text-xl font-bold text-slate-800 mb-6">Our Specializations</h2>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             @foreach ([['name' => 'Paediatric', 'icon' => '👶', 'color' => 'rose'], ['name' => 'Physio', 'icon' => '🧘', 'color' => 'blue'], ['name' => 'Urology', 'icon' => '🧬', 'color' => 'amber'], ['name' => 'Dental', 'icon' => '🦷', 'color' => 'cyan']] as $cat)
@@ -84,7 +84,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    </section>
+                    </section> --}}
 
                     <section>
                         <div class="flex items-center justify-between mb-4">
@@ -181,7 +181,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 border-b border-gray-300">
                 <div>
-                    <h1 class="text-4xl font-black text-slate-900 mt-1">Welcome, Dr. {{ Str::before(auth()->user()->name, ' ') }}</h1>
+                    <h1 class="text-4xl font-black text-slate-900 mt-1">Welcome, Dr. {{ ucfirst(explode(' ', auth()->user()->name)[1] ?? '') }}</h1>
                     <p class="text-slate-500 mt-2 text-lg">
                         You have
                         <span class="text-slate-900 font-bold">
