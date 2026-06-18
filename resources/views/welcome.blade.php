@@ -7,6 +7,7 @@
             :pastAppointments="$pastAppointments"
             :todayCount="$todayCount"
             :pendingCount="$pendingCount"
+            :todayAppointments="$todayAppointments"
             />
         @else
             <div class="-mt-4 relative pt-16 pb-32">

@@ -126,8 +126,8 @@
                         My Profile
                     </a>
 
-                    <a href="#"
-                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all text-slate-400 cursor-not-allowed">
+                    <a href="{{ route('profile.account-settings') }}"
+                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all {{ request()->routeIs('profile.account-settings') ? 'bg-rose-50 text-rose-600' : 'text-slate-600 hover:bg-slate-50/80 hover:text-slate-900' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -135,8 +135,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
                         Account Settings
-                        <span
-                            class="ml-auto text-[8px] font-black bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded-md uppercase tracking-wider">TODO</span>
                     </a>
                 </div>
             @endif
@@ -227,8 +225,8 @@
                     </a>
 
                     {{-- Account Settings (Placeholder - TODO) --}}
-                    <a href="#"
-                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all text-slate-400 cursor-not-allowed">
+                    <a href="{{ route('profile.account-settings') }}"
+                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all {{ request()->routeIs('profile.account-settings') ? 'bg-rose-50 text-rose-600' : 'text-slate-600 hover:bg-slate-50/80 hover:text-slate-900' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -236,8 +234,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
                         Account Settings
-                        <span
-                            class="ml-auto text-[8px] font-black bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded-md uppercase tracking-wider">TODO</span>
                     </a>
                 </div>
             @endif

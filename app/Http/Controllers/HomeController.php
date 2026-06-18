@@ -12,6 +12,7 @@ class HomeController extends Controller
         $pastAppointments = collect();
         $todayCount = 0;
         $pendingCount = 0;
+        $todayAppointments = collect();
 
 
         if (Auth::check() && Auth::user()->role === 'patient') {
@@ -46,8 +47,14 @@ class HomeController extends Controller
             $pendingCount = \App\Models\Appointment::where('doctor_id', Auth::id())
                 ->where('status', 'pending')
                 ->count();
+
+            $todayAppointments = \App\Models\Appointment::where('doctor_id', Auth::id())
+                ->whereDate('appointment_time', \Carbon\Carbon::today())
+                ->with('patient')
+                ->orderBy('appointment_time', 'asc')
+                ->get();
         }
 
-        return view('welcome', compact('upcomingAppointment', 'pastAppointments', 'todayCount', 'pendingCount'));
+        return view('welcome', compact('upcomingAppointment', 'pastAppointments', 'todayCount', 'pendingCount', 'todayAppointments'));
     }
 }

@@ -1,4 +1,4 @@
-@props(['upcomingAppointment' => null, 'todayCount' => 0, 'pendingCount' => 0, 'pastAppointments' => collect()])
+@props(['upcomingAppointment' => null, 'todayCount' => 0, 'pendingCount' => 0, 'pastAppointments' => collect(), 'todayAppointments' => collect()])
 
 <x-animation>
     @if (auth()->user()->role === 'patient')
@@ -178,11 +178,22 @@
             </div>
         </div>
     @elseif (auth()->user()->role === 'doctor')
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 border-b border-gray-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            {{-- ═══════════════════════════════════════════════════════════════ --}}
+            {{--  HEADER: Greeting + Date Badge + Primary CTA                  --}}
+            {{-- ═══════════════════════════════════════════════════════════════ --}}
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-slate-100">
                 <div>
-                    <h1 class="text-4xl font-black text-slate-900 mt-1">Welcome, Dr. {{ ucfirst(explode(' ', auth()->user()->name)[1] ?? '') }}</h1>
-                    <p class="text-slate-500 mt-2 text-lg">
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span
+                            class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                            Clinical Desk
+                        </span>
+                        <span class="text-slate-400 text-xs font-medium">{{ now()->format('l, d F Y') }}</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Welcome, Dr. {{ ucfirst(explode(' ', auth()->user()->name)[1] ?? '') }}</h1>
+                    <p class="text-slate-500 mt-1.5 text-base font-medium">
                         You have
                         <span class="text-slate-900 font-bold">
                             {{ $todayCount }} {{ Str::plural('consultation', $todayCount) }}
@@ -191,11 +202,10 @@
                     </p>
                 </div>
 
-                <div class=" mt-6 md:mt-0">
+                <div class="mt-6 md:mt-0 flex items-center gap-3">
                     <a href="/dashboard"
-                        class="inline-flex items-center justify-center px-8 py-4 border border-slate-200 text-sm font-bold rounded-2xl shadow-sm text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all focus:outline-none">
-                        <svg class="w-5 h-5 mr-2 text-rose-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                        class="inline-flex items-center justify-center min-h-[44px] px-6 py-3 border border-slate-200 text-sm font-bold rounded-2xl shadow-sm text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+                        <svg class="w-5 h-5 mr-2 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -204,124 +214,278 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                    <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Consultations</p>
-                    <h3 class="text-2xl font-black text-slate-900">{{ $todayCount }} Today</h3>
+            {{-- ═══════════════════════════════════════════════════════════════ --}}
+            {{--  METRICS RIBBON: Borderless KPI Cards                          --}}
+            {{-- ═══════════════════════════════════════════════════════════════ --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
+
+                {{-- KPI 1: Today's Consultations --}}
+                <div class="group relative overflow-hidden bg-white rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:shadow-lg hover:shadow-rose-100/40 border border-transparent hover:border-rose-100">
+                    <div class="absolute top-0 right-0 w-24 h-24 -mr-6 -mt-6 bg-gradient-to-br from-rose-100 to-rose-50 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Today's Consultations</p>
+                            <div class="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-black text-slate-900">{{ $todayCount }}</h3>
+                        <p class="text-xs text-slate-400 font-semibold mt-1">Confirmed sessions</p>
+                    </div>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                    <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Pending Approvals</p>
-                    <h3 class="text-2xl font-black text-rose-500">{{ $pendingCount }} New</h3>
+
+                {{-- KPI 2: Pending Approvals --}}
+                <div class="group relative overflow-hidden bg-white rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:shadow-lg hover:shadow-amber-100/40 border border-transparent hover:border-amber-100">
+                    <div class="absolute top-0 right-0 w-24 h-24 -mr-6 -mt-6 bg-gradient-to-br from-amber-100 to-amber-50 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Pending Approvals</p>
+                            <div class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-black text-slate-900">{{ $pendingCount }}</h3>
+                        <p class="text-xs text-slate-400 font-semibold mt-1">Awaiting your review</p>
+                    </div>
                 </div>
-                <div class="bg-indigo-600 rounded-2xl p-5 shadow-lg text-white">
-                    <p class="text-indigo-100 text-xs font-bold uppercase tracking-wider">Next Shift</p>
-                    <h3 class="text-2xl font-black italic">02:00 PM</h3>
+
+                {{-- KPI 3: Completed Ledgers --}}
+                <div class="group relative overflow-hidden bg-white rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-100/40 border border-transparent hover:border-emerald-100">
+                    <div class="absolute top-0 right-0 w-24 h-24 -mr-6 -mt-6 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-3">
+                            <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Completed Ledgers</p>
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-black text-slate-900">{{ $todayAppointments->where('status', 'completed')->count() }}</h3>
+                        <p class="text-xs text-slate-400 font-semibold mt-1">Finalized today</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {{-- ═══════════════════════════════════════════════════════════════ --}}
+            {{--  MAIN GRID: Active Queue (Left) + Quick Actions (Right)        --}}
+            {{-- ═══════════════════════════════════════════════════════════════ --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+                {{-- ─────────────────────────────────────────────────────────── --}}
+                {{--  ACTIVE QUEUE TABLE                                        --}}
+                {{-- ─────────────────────────────────────────────────────────── --}}
                 <div class="lg:col-span-2">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-slate-800">Next Scheduled Patient</h2>
-                        <a href="/dashboard" class="text-sm font-semibold text-indigo-600 hover:text-indigo-700">Full
-                            Schedule &rarr;</a>
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Active Queue</h2>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">Today's booked sessions</p>
+                        </div>
+                        <a href="/dashboard"
+                            class="inline-flex items-center min-h-[44px] text-sm font-semibold text-rose-500 hover:text-rose-600 transition-colors">
+                            Full Schedule
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                        </a>
                     </div>
 
-                    @if ($upcomingAppointment)
-                        <div
-                            class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                            <div
-                                class="p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start space-y-6 sm:space-y-0 sm:space-x-8">
+                    @if ($todayAppointments->isNotEmpty())
+                        {{-- Desktop Table View --}}
+                        <div class="hidden sm:block bg-white rounded-[1.75rem] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] overflow-hidden">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-slate-100">
+                                        <th class="text-left px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Patient Profile</th>
+                                        <th class="text-left px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Appt Time</th>
+                                        <th class="text-left px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Reason for Visit</th>
+                                        <th class="text-left px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50">
+                                    @foreach ($todayAppointments as $appointment)
+                                        <tr class="group hover:bg-rose-50/30 transition-colors duration-200">
+                                            {{-- Patient Profile --}}
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-rose-100 to-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 font-black text-sm">
+                                                        {{ strtoupper(substr($appointment->patient->name ?? 'P', 0, 1)) }}
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <p class="text-sm font-bold text-slate-800 truncate">{{ $appointment->patient->name ?? 'Unknown Patient' }}</p>
+                                                        <p class="text-xs text-slate-400 font-medium truncate">{{ $appointment->patient->email ?? '' }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            {{-- Appointment Time Pill --}}
+                                            <td class="px-6 py-4">
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                                                    <svg class="w-3.5 h-3.5 mr-1.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                    </svg>
+                                                    {{ $appointment->appointment_time->format('h:i A') }}
+                                                </span>
+                                            </td>
+                                            {{-- Reason for Visit --}}
+                                            <td class="px-6 py-4">
+                                                <p class="text-sm text-slate-600 font-medium italic line-clamp-1 max-w-[200px]">
+                                                    {{ Str::limit($appointment->reason ?? 'General Consultation', 45) }}
+                                                </p>
+                                            </td>
+                                            {{-- Status Tag --}}
+                                            <td class="px-6 py-4">
+                                                @if ($appointment->status === 'confirmed')
+                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                                                        Confirmed
+                                                    </span>
+                                                @elseif ($appointment->status === 'completed')
+                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
+                                                        Completed
+                                                    </span>
+                                                @elseif ($appointment->status === 'cancelled')
+                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-500 border border-rose-100">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span>
+                                                        Cancelled
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-100">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1.5 animate-pulse"></span>
+                                                        Pending
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
 
-                                <div
-                                    class="flex-shrink-0 w-28 h-28 bg-indigo-50 rounded-full flex flex-col items-center justify-center border-4 border-white shadow-inner">
-                                    <span class="text-indigo-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </span>
-                                    <span
-                                        class="text-sm font-black text-indigo-700 mt-1">{{ $upcomingAppointment->appointment_time->format('H:i') }}</span>
-                                </div>
-
-                                <div class="flex-1 text-center sm:text-left">
-                                    <div class="flex items-center justify-center sm:justify-start space-x-2 mb-2">
-                                        <span
-                                            class="px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-700 text-[10px] font-bold uppercase tracking-wider italic">Priority</span>
-                                        <span
-                                            class="text-slate-500 text-sm font-medium">{{ $upcomingAppointment->appointment_time->format('l, d M') }}</span>
+                        {{-- Mobile Card View --}}
+                        <div class="sm:hidden space-y-3">
+                            @foreach ($todayAppointments as $appointment)
+                                <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+                                    <div class="flex items-start justify-between mb-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-rose-100 to-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 font-black text-sm">
+                                                {{ strtoupper(substr($appointment->patient->name ?? 'P', 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-bold text-slate-800">{{ $appointment->patient->name ?? 'Unknown' }}</p>
+                                                <p class="text-xs text-slate-400 font-medium">{{ $appointment->patient->email ?? '' }}</p>
+                                            </div>
+                                        </div>
+                                        @if ($appointment->status === 'confirmed')
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                                Confirmed
+                                            </span>
+                                        @elseif ($appointment->status === 'completed')
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
+                                                Completed
+                                            </span>
+                                        @elseif ($appointment->status === 'cancelled')
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-500 border border-rose-100">
+                                                Cancelled
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-100">
+                                                Pending
+                                            </span>
+                                        @endif
                                     </div>
-                                    <h3 class="text-3xl font-extrabold text-slate-900">
-                                        {{ $upcomingAppointment->patient->name }}</h3>
-
-                                    <div class="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                        <p class="text-xs text-slate-400 font-bold uppercase mb-1">Reason for
-                                            Consultation
-                                        </p>
-                                        <p class="text-slate-700 leading-relaxed italic">
-                                            "{{ $upcomingAppointment->reason }}"</p>
+                                    <div class="flex items-center gap-3 pt-2 border-t border-slate-50">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                                            <svg class="w-3 h-3 mr-1 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            {{ $appointment->appointment_time->format('h:i A') }}
+                                        </span>
+                                        <p class="text-xs text-slate-500 italic truncate">{{ Str::limit($appointment->reason ?? 'General', 30) }}</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="bg-slate-50 border-t border-slate-100 px-8 py-4 flex justify-end space-x-4">
-                                <button
-                                    class="text-sm font-bold text-slate-500 hover:text-slate-700 transition">Patient
-                                    History</button>
-                                <a href="/dashboard"
-                                    class="bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-md transition">Start
-                                    Session</a>
-                            </div>
+                            @endforeach
                         </div>
                     @else
-                        <div class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-16 text-center">
-                            <div
-                                class="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-slate-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                        {{-- Empty State --}}
+                        <div class="bg-white rounded-[1.75rem] border-2 border-dashed border-slate-200 p-12 sm:p-16 text-center">
+                            <div class="bg-slate-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-300">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                                 </svg>
                             </div>
-                            <p class="text-slate-500 font-medium italic">You're all caught up! No more patients for
-                                today.
-                            </p>
+                            <h3 class="text-base font-bold text-slate-800 mb-1">No appointments today</h3>
+                            <p class="text-slate-400 text-sm font-medium">Your schedule is clear. Enjoy the downtime!</p>
                         </div>
                     @endif
                 </div>
 
-                <div class="space-y-6">
-                    <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-                        <h3 class="font-bold text-slate-800 mb-4 flex items-center">
-                            <span class="mr-2">📋</span> Daily Checklist
-                        </h3>
-                        <ul class="space-y-4">
-                            <li class="flex items-center text-sm text-slate-600">
-                                <input type="checkbox" class="rounded text-indigo-600 mr-3" checked disabled>
-                                <span class="line-through">Review morning lab results</span>
-                            </li>
-                            <li class="flex items-center text-sm text-slate-600">
-                                <input type="checkbox" class="rounded text-indigo-600 mr-3">
-                                Sign 3 prescription renewals
-                            </li>
-                            <li class="flex items-center text-sm text-slate-600">
-                                <input type="checkbox" class="rounded text-indigo-600 mr-3">
-                                Update clinical notes for Dr. Smith
-                            </li>
-                        </ul>
+                {{-- ─────────────────────────────────────────────────────────── --}}
+                {{--  QUICK ACTIONS SIDEBAR                                     --}}
+                {{-- ─────────────────────────────────────────────────────────── --}}
+                <div class="space-y-5">
+
+                    {{-- Action 1: Manage Availability Slots --}}
+                    <div class="group bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-lg hover:shadow-rose-100/30 hover:border-rose-100 transition-all duration-300 relative overflow-hidden">
+                        <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-rose-100 to-rose-50 rounded-full opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center text-white mb-4 shadow-md shadow-rose-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 mb-1">Manage Availability</h3>
+                            <p class="text-xs text-slate-400 font-medium mb-4 leading-relaxed">Configure your open time slots, block off dates, and set recurring schedule patterns.</p>
+                            <a href="/schedule"
+                                class="inline-flex items-center justify-center w-full min-h-[44px] px-4 py-2.5 bg-slate-900 text-white text-xs font-black rounded-xl shadow-sm hover:bg-slate-800 transition-all uppercase tracking-widest">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                                </svg>
+                                Open Scheduler
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="bg-indigo-900 rounded-3xl p-6 text-white relative overflow-hidden">
-                        <h3 class="font-bold text-lg mb-2 relative z-10">Clinical Portal</h3>
-                        <p class="text-indigo-300 text-xs mb-4 relative z-10">Access the centralized medical database
-                            for
-                            research and drug interactions.</p>
-                        <button
-                            class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-xs font-bold transition relative z-10">Launch
-                            Portal</button>
-                        <div class="absolute -top-4 -right-4 w-20 h-20 bg-white/5 rounded-full"></div>
+                    {{-- Action 2: Access Patient Health Ledgers --}}
+                    <div class="group bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-lg hover:shadow-emerald-100/30 hover:border-emerald-100 transition-all duration-300 relative overflow-hidden">
+                        <div class="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-full opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+                        <div class="relative">
+                            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white mb-4 shadow-md shadow-emerald-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 mb-1">Health Ledgers</h3>
+                            <p class="text-xs text-slate-400 font-medium mb-4 leading-relaxed">Review patient clinical records, diagnoses, prescriptions, and past consultation history.</p>
+                            <a href="/clinical-records"
+                                class="inline-flex items-center justify-center w-full min-h-[44px] px-4 py-2.5 bg-emerald-600 text-white text-xs font-black rounded-xl shadow-sm hover:bg-emerald-700 transition-all uppercase tracking-widest">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
+                                Browse Ledgers
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Contextual Tip Banner --}}
+                    <div class="bg-slate-900 rounded-2xl p-5 relative overflow-hidden">
+                        <div class="relative z-10 flex items-start space-x-3">
+                            <div class="shrink-0 w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-rose-400">
+                                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-white text-xs font-bold mb-0.5">Quick Tip</p>
+                                <p class="text-slate-400 text-[11px] font-medium leading-relaxed">Confirming an appointment sends an automated notification to the patient. Review the reason carefully before accepting.</p>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-4 -right-4 w-20 h-20 bg-rose-500/10 rounded-full"></div>
+                        <div class="absolute -top-6 -left-6 w-16 h-16 bg-white/[0.03] rounded-full"></div>
                     </div>
                 </div>
             </div>

@@ -75,8 +75,20 @@ Route::get('/appointments/{appointment}/record', [AppointmentController::class, 
     ->middleware('auth')
     ->name('appointments.record');
 
-//Profile Route
-Route::get('/profile', fn() => view('profile.profile'))->middleware('auth');
+//Profile Routes
+Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->middleware('auth')->name('profile');
+Route::post('/profile/account', [App\Http\Controllers\ProfileController::class, 'updateAccount'])->middleware('auth')->name('profile.account');
+Route::post('/profile/patient-info', [App\Http\Controllers\ProfileController::class, 'updatePatientProfile'])->middleware('auth')->name('profile.patient-info');
+Route::post('/profile/patient-medical', [App\Http\Controllers\ProfileController::class, 'updatePatientMedical'])->middleware('auth')->name('profile.patient-medical');
+Route::post('/profile/doctor-credentials', [App\Http\Controllers\ProfileController::class, 'updateDoctorCredentials'])->middleware('auth')->name('profile.doctor-credentials');
+Route::post('/profile/doctor-consultation', [App\Http\Controllers\ProfileController::class, 'updateDoctorConsultation'])->middleware('auth')->name('profile.doctor-consultation');
+
+// Account Settings Routes
+Route::get('/profile/account-settings', [App\Http\Controllers\ProfileController::class, 'showAccountSettings'])->middleware('auth')->name('profile.account-settings');
+Route::post('/profile/account-settings/identity', [App\Http\Controllers\ProfileController::class, 'updateIdentity'])->middleware('auth')->name('profile.account-settings.identity');
+Route::post('/profile/account-settings/security', [App\Http\Controllers\ProfileController::class, 'updateSecurity'])->middleware('auth')->name('profile.account-settings.security');
+Route::post('/profile/account-settings/revoke', [App\Http\Controllers\ProfileController::class, 'revokeSessions'])->middleware('auth')->name('profile.account-settings.revoke');
+Route::post('/profile/account-settings/deactivate', [App\Http\Controllers\ProfileController::class, 'deactivateAccount'])->middleware('auth')->name('profile.account-settings.deactivate');
 /*
 app/Http/Controllers/
 ├── Auth/
