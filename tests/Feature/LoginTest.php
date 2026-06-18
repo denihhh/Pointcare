@@ -10,7 +10,7 @@ it('logs in a user', function () {
 
         ->fill('email', $user->email)
         ->fill('password', 'danish123')
-        ->click('@login-button')
+        ->click('Sign In')
         ->assertPathIs('/');
 
     $this->assertAuthenticated();

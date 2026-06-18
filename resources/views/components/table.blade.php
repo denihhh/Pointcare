@@ -4,18 +4,36 @@
     <table class="w-full text-left border-separate border-spacing-y-3">
         <thead>
             <tr class="text-slate-400 text-[10px] uppercase tracking-[0.2em] font-black">
+                <th class="pb-4 px-4">Appointment Schedule</th>
+                <th class="pb-4 px-4">Booking Timeline</th>
                 <th class="pb-4 px-4">{{ $role === 'doctor' ? 'Patient' : 'Doctor' }}</th>
-                <th class="pb-4 px-4">Schedule</th>
                 <th class="pb-4 px-4">Consultation Reason</th>
                 <th class="pb-4 px-4 text-right">Status</th>
             </tr>
         </thead>
         @foreach ($appointments as $appointment)
-        <tbody x-data="{ expanded: false }">
+        <tbody x-data="{ expanded: false }" wire:key="appointment-row-{{ $appointment->id }}">
             <tr @click="expanded = !expanded"
                 class="group bg-white hover:bg-slate-50/50 hover:cursor-pointer transition-all duration-200">
 
                 <td class="py-5 px-4 first:rounded-l-2xl border-y border-l border-slate-50">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-black text-slate-800">
+                            {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('d M Y') }}
+                        </span>
+                        <span class="text-xs font-bold text-rose-600">
+                            {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}
+                        </span>
+                    </div>
+                </td>
+
+                <td class="py-5 px-4 border-y border-slate-50">
+                    <span class="text-[11px] text-slate-400 font-medium tracking-wide">
+                        Booked on: {{ \Carbon\Carbon::parse($appointment->created_at)->format('d M Y') }}
+                    </span>
+                </td>
+
+                <td class="py-5 px-4 border-y border-slate-50">
                     <div class="flex items-center">
                         <div
                             class="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs mr-3 border border-slate-200">
@@ -24,15 +42,6 @@
                         <span class="text-sm font-bold text-slate-700">
                             {{ $role === 'doctor' ? $appointment->patient->name : 'Dr. ' . $appointment->doctor->name }}
                         </span>
-                    </div>
-                </td>
-
-                <td class="py-5 px-4 border-y border-slate-50">
-                    <div class="flex flex-col">
-                        <span
-                            class="text-sm font-bold text-slate-600">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('d M Y') }}</span>
-                        <span
-                            class="text-[11px] text-slate-400 font-medium">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</span>
                     </div>
                 </td>
 
@@ -61,7 +70,7 @@
 
             <tr x-show="expanded" x-cloak x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 -translate-y-2">
-                <td colspan="4" class="px-4 pb-4">
+                <td colspan="5" class="px-4 pb-4">
                     <div
                         class="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-inner flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 

@@ -14,7 +14,7 @@
                     <x-form.field name="email" label="Email" type="email" placeholder="email@example.com" />
                     <x-form.field name="password" label="Password" type="password" />
 
-                    <button type="submit"
+                    <button type="submit" dusk="login-button"
                         class="w-full py-3 px-4 rounded-2xl bg-primary text-white font-black shadow-md hover:opacity-90 transition">
                         Sign In
                     </button>

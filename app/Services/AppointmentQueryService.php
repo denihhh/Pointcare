@@ -45,16 +45,37 @@ class AppointmentQueryService
         return array_values($availableSlots);
     }
 
-    public function getPatientAppointments(int $patientId, int $perPage = 5, int $page = 1): LengthAwarePaginator
+    public function getPatientAppointments(int $patientId, int $perPage = 5, int $page = 1, string $statusFilter = 'all'): LengthAwarePaginator
     {
-        return $this->paginateWithGuard(
-            Appointment::query()
-                ->where('patient_id', $patientId)
-                ->with('doctor')
-                ->orderBy('appointment_time', 'asc'),
-            $perPage,
-            $page
-        );
+        $now = Carbon::now('Asia/Kuala_Lumpur');
+        $today = Carbon::today('Asia/Kuala_Lumpur');
+
+        $query = Appointment::query()
+            ->where('patient_id', $patientId)
+            ->with('doctor');
+
+        if ($statusFilter === 'upcoming') {
+            $query->whereIn('status', ['pending', 'confirmed'])
+                ->where('appointment_time', '>=', $today->toDateTimeString());
+        } elseif ($statusFilter === 'completed') {
+            $query->where(function ($q) use ($today) {
+                $q->where('status', 'completed')
+                    ->orWhere(function ($sub) use ($today) {
+                        $sub->where('appointment_time', '<', $today->toDateTimeString())
+                            ->where('status', '!=', 'cancelled');
+                    });
+            });
+        } elseif ($statusFilter === 'cancelled') {
+            $query->where('status', 'cancelled');
+        }
+
+        $nowStr = $now->toDateTimeString();
+
+        $query->orderByRaw('CASE WHEN appointment_time >= ? THEN 0 ELSE 1 END ASC', [$nowStr])
+            ->orderByRaw('CASE WHEN appointment_time >= ? THEN appointment_time END ASC', [$nowStr])
+            ->orderByRaw('CASE WHEN appointment_time < ? THEN appointment_time END DESC', [$nowStr]);
+
+        return $this->paginateWithGuard($query, $perPage, $page);
     }
 
     public function getDoctorAppointments(int $doctorId, int $perPage = 5, int $page = 1): LengthAwarePaginator

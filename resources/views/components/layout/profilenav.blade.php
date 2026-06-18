@@ -2,7 +2,7 @@
     @auth
         <div class="flex items-center gap-x-5">
             <x-notification.notibar />
-            <div data-test="profile-dropdown" x-data="{ open: false }" @click.away="open = false" class="relative">
+            <div data-test="profile-dropdown" dusk="profile-dropdown" x-data="{ open: false }" @click.away="open = false" class="relative">
 
                 <button @click="open = !open" type="button"
                     class="flex items-center max-w-xs text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 hover:shadow-md p-1 pr-3 border border-rose-200">
@@ -64,7 +64,7 @@
 
                     <form method="POST" action="/logout">
                         @csrf
-                        <button data-test="logout-button" type="submit"
+                        <button data-test="logout-button" dusk="logout-button" type="submit"
                             class="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                             Logout
                         </button>
