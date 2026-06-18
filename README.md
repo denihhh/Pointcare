@@ -53,5 +53,27 @@ PointCare leverages the power of the **TALL Stack**, prioritizing a decoupled, c
 
 1. **Clone the Repository:**
    ```bash
-   git clone [https://github.com/yourusername/pointcare-booking.git](https://github.com/yourusername/pointcare-booking.git)
+   git clone https://github.com/denihhh/pointcare.git
    cd pointcare-booking
+
+2. **Install Dependencies:**
+   ```bash
+   composer install
+   npm install
+
+3. **Configure Environment Parameters:**
+   
+    copy .env.example into .env
+   ```bash
+   php artisan key:generate
+Open your newly created .env file and configure your database driver and connection attributes.
+
+4. **Execute Database Migrations:**
+   ```bash
+   php artisan migrate
+
+5. **Build Assets & Boot the Application Engine:**
+   ```bash
+   npm run dev
+    # In a separate terminal tab:
+    php artisan serve
