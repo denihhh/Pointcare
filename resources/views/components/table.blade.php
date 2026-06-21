@@ -18,10 +18,10 @@
 
                 <td class="py-5 px-4 first:rounded-l-2xl border-y border-l border-slate-50">
                     <div class="flex flex-col">
-                        <span class="text-sm font-black text-slate-800">
+                        <span class="text-sm font-bold text-slate-800">
                             {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('d M Y') }}
                         </span>
-                        <span class="text-xs font-bold text-rose-600">
+                        <span class="text-xs font-black text-slate-500">
                             {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}
                         </span>
                     </div>
@@ -40,7 +40,7 @@
                             {{ substr($role === 'doctor' ? $appointment->patient->name : $appointment->doctor->name, 0, 1) }}
                         </div>
                         <span class="text-sm font-bold text-slate-700">
-                            {{ $role === 'doctor' ? $appointment->patient->name : 'Dr. ' . $appointment->doctor->name }}
+                            {{ $role === 'doctor' ? $appointment->patient->name : 'Dr. ' . preg_replace('/^dr\.?\s+/i', '', $appointment->doctor->name) }}
                         </span>
                     </div>
                 </td>

@@ -1,5 +1,6 @@
 {{-- Sidebar Component Layer Container --}}
-<div>
+<div class="print:hidden">
+
     {{-- 1. Mobile Drawer Backdrop Overlay (Alpine-controlled) --}}
     <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -88,7 +89,7 @@
                     </a>
 
                     <a href="/records"
-                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all {{ request()->is('records') ? 'bg-rose-50 text-rose-600' : 'text-slate-600 hover:bg-slate-50/80 hover:text-slate-900' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all {{ (request()->is('records') || (auth()->user()->role === 'patient' && request()->is('appointments/*/record'))) ? 'bg-rose-50 text-rose-600' : 'text-slate-600 hover:bg-slate-50/80 hover:text-slate-900' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -198,7 +199,7 @@
 
                     {{-- Clinical Records (Connected: /clinical-records) --}}
                     <a href="/clinical-records"
-                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all {{ request()->is('clinical-records*') ? 'bg-rose-50 text-rose-600' : 'text-slate-600 hover:bg-slate-50/80 hover:text-slate-900' }}">
+                        class="group flex items-center gap-3 px-3 py-2.5 text-sm font-bold rounded-xl transition-all {{ (request()->is('clinical-records*') || (auth()->user()->role === 'doctor' && request()->is('appointments/*/record'))) ? 'bg-rose-50 text-rose-600' : 'text-slate-600 hover:bg-slate-50/80 hover:text-slate-900' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"

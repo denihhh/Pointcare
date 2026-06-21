@@ -101,12 +101,12 @@ it('filters appointments by status filter tabs correctly', function () {
 
     Livewire::test(PatientAppointments::class)
         // Default (all filter)
-        ->assertViewHas('appointments', fn ($appointments) => $appointments->count() === 3)
+        ->assertViewHas('appointments', fn($appointments) => $appointments->count() === 3)
         ->assertViewHas('allCount', 3)
         ->assertViewHas('upcomingCount', 1)
         ->assertViewHas('completedCount', 1)
         ->assertViewHas('cancelledCount', 1)
-        
+
         // Filter: upcoming
         ->call('setFilter', 'upcoming')
         ->assertViewHas('appointments', function ($appointments) use ($upcoming) {

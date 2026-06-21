@@ -14,20 +14,8 @@ class DoctorClinicalRecords extends Component
     use WithPagination;
 
     public string $search = '';
-    public string $tab = 'all';
-    public string $statusFilter = '';
 
     public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingTab()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingStatusFilter()
     {
         $this->resetPage();
     }
@@ -38,30 +26,9 @@ class DoctorClinicalRecords extends Component
         $perPage = 10;
 
         $query = Appointment::where('doctor_id', $doctor->id)
+            ->where('status', 'completed')
             ->with('patient')
             ->orderByDesc('appointment_time');
-
-        // Apply tab-specific filters
-        match ($this->tab) {
-            'diagnoses' => $query->where('status', 'completed')->whereNotNull('diagnosis'),
-            'prescriptions' => $query->where('status', 'completed')
-                ->whereNotNull('prescription')
-                ->where('prescription', '!=', ''),
-            default => $query->where(function ($q) {
-                $q->where(function ($q2) {
-                    $q2->whereNotNull('reason')->where('reason', '!=', '');
-                })->orWhere(function ($q2) {
-                    $q2->whereNotNull('symptoms')->where('symptoms', '!=', '');
-                })->orWhere(function ($q2) {
-                    $q2->whereNotNull('diagnosis')->where('diagnosis', '!=', '');
-                });
-            }),
-        };
-
-        // Status filter (only applicable on "all" tab)
-        if ($this->tab === 'all' && $this->statusFilter) {
-            $query->where('status', $this->statusFilter);
-        }
 
         // Patient name search
         if ($this->search) {

@@ -35,7 +35,7 @@
 
                 {{-- Mobile Top Sticky Bar (Only visible on small devices to open the sidebar) --}}
                 <div
-                    class="sticky top-0 z-40 flex items-center justify-between h-16 bg-white border-b border-rose-100 px-4 md:px-8 lg:hidden">
+                    class="sticky top-0 z-40 flex items-center justify-between h-16 bg-white border-b border-rose-100 px-4 md:px-8 lg:hidden print:hidden">
                     
                     <a href="/" class=" flex items-center">
                         <div

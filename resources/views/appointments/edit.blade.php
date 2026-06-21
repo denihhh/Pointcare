@@ -64,7 +64,7 @@
                 <select name="doctor_id" x-model="doctorId" @change="resetSelection()"
                     class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 outline-none focus:border-rose-500 focus:ring-4 focus:ring-rose-100 transition-all">
                     @foreach ($doctors as $doctor)
-                        <option value="{{ $doctor->id }}">Dr. {{ $doctor->name }}</option>
+                        <option value="{{ $doctor->id }}">Dr. {{ preg_replace('/^dr\.?\s+/i', '', $doctor->name) }}</option>
                     @endforeach
                 </select>
                 @error('doctor_id') <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p> @enderror

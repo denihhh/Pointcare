@@ -56,7 +56,7 @@
                                                 class="text-slate-500 text-sm font-medium">{{ $upcomingAppointment->appointment_time->format('h:i A') }}</span>
                                         </div>
                                         <h3 class="text-2xl font-bold text-slate-800">Dr.
-                                            {{ $upcomingAppointment->doctor->name }}</h3>
+                                            {{ preg_replace('/^dr\.?\s+/i', '', $upcomingAppointment->doctor->name) }}</h3>
                                         <p class="text-slate-500 font-medium mt-1">Consultation regarding: <span
                                                 class="text-slate-700">{{ Str::limit($upcomingAppointment->reason, 50) }}</span>
                                         </p>
@@ -105,7 +105,7 @@
                                                 {{ substr($appointment->doctor->name, 0, 1) }}
                                             </div>
                                             <div>
-                                                <h4 class="text-base font-bold text-slate-800">Dr. {{ $appointment->doctor->name }}</h4>
+                                                <h4 class="text-base font-bold text-slate-800">Dr. {{ preg_replace('/^dr\.?\s+/i', '', $appointment->doctor->name) }}</h4>
                                                 <p class="text-xs text-slate-500 font-medium mt-0.5">
                                                     {{ $appointment->appointment_time->format('d M Y') }} at {{ $appointment->appointment_time->format('h:i A') }}
                                                 </p>
@@ -310,20 +310,20 @@
                                     @foreach ($todayAppointments as $appointment)
                                         <tr class="group hover:bg-rose-50/30 transition-colors duration-200">
                                             {{-- Patient Profile --}}
-                                            <td class="px-6 py-4">
+                                            <td class="px-6 py-3.5">
                                                 <div class="flex items-center space-x-3">
-                                                    <div class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-rose-100 to-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 font-black text-sm">
+                                                    <div class="shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-rose-100 to-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 font-bold text-sm">
                                                         {{ strtoupper(substr($appointment->patient->name ?? 'P', 0, 1)) }}
                                                     </div>
                                                     <div class="min-w-0">
-                                                        <p class="text-sm font-bold text-slate-800 truncate">{{ $appointment->patient->name ?? 'Unknown Patient' }}</p>
-                                                        <p class="text-xs text-slate-400 font-medium truncate">{{ $appointment->patient->email ?? '' }}</p>
+                                                        <p class="text-sm font-semibold text-slate-800 truncate">{{ $appointment->patient->name ?? 'Unknown Patient' }}</p>
+                                                        <p class="text-[11px] text-slate-400 font-medium truncate max-w-[150px]">{{ $appointment->patient->email ?? '' }}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            {{-- Appointment Time Pill --}}
-                                            <td class="px-6 py-4">
-                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">
+                                            {{-- Appointment Time --}}
+                                            <td class="px-6 py-3.5">
+                                                <span class="inline-flex items-center text-xs font-semibold text-slate-600">
                                                     <svg class="w-3.5 h-3.5 mr-1.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
@@ -331,31 +331,31 @@
                                                 </span>
                                             </td>
                                             {{-- Reason for Visit --}}
-                                            <td class="px-6 py-4">
-                                                <p class="text-sm text-slate-600 font-medium italic line-clamp-1 max-w-[200px]">
-                                                    {{ Str::limit($appointment->reason ?? 'General Consultation', 45) }}
+                                            <td class="px-6 py-3.5">
+                                                <p class="text-xs text-slate-500 italic truncate max-w-[160px]">
+                                                    {{ Str::limit($appointment->reason ?? 'General Consultation', 35) }}
                                                 </p>
                                             </td>
-                                            {{-- Status Tag --}}
-                                            <td class="px-6 py-4">
+                                            {{-- Status Dot Indicator --}}
+                                            <td class="px-6 py-3.5">
                                                 @if ($appointment->status === 'confirmed')
-                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                                                    <span class="inline-flex items-center text-xs font-semibold text-emerald-600">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
                                                         Confirmed
                                                     </span>
                                                 @elseif ($appointment->status === 'completed')
-                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
+                                                    <span class="inline-flex items-center text-xs font-semibold text-slate-500">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-450 mr-2"></span>
                                                         Completed
                                                     </span>
                                                 @elseif ($appointment->status === 'cancelled')
-                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-500 border border-rose-100">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span>
+                                                    <span class="inline-flex items-center text-xs font-semibold text-rose-600">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-2"></span>
                                                         Cancelled
                                                     </span>
                                                 @else
-                                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 border border-amber-100">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1.5 animate-pulse"></span>
+                                                    <span class="inline-flex items-center text-xs font-semibold text-amber-600">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2 animate-pulse"></span>
                                                         Pending
                                                     </span>
                                                 @endif

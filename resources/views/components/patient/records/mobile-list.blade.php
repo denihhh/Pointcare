@@ -5,7 +5,7 @@
 <div class="md:hidden space-y-4">
     @foreach($appointments as $index => $appointment)
         <div @click="selectedRecord = records[{{ $index }}]; modalOpen = true"
-            class="bg-white border border-rose-100/60 rounded-2xl p-5 hover:shadow-md transition duration-150 hover:cursor-pointer relative overflow-hidden flex flex-col gap-4"
+            class="bg-white border border-slate-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition duration-150 hover:cursor-pointer relative overflow-hidden flex flex-col gap-4"
             x-show="!search || 
                              '{{ strtolower($appointment->doctor->name) }}'.includes(search.toLowerCase()) || 
                              '{{ strtolower($appointment->diagnosis ?? '') }}'.includes(search.toLowerCase())">

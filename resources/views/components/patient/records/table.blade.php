@@ -2,29 +2,29 @@
     'appointments'
 ])
 
-<div class="hidden md:block bg-white border border-rose-100/60 rounded-[2rem] shadow-sm overflow-hidden">
+<div class="hidden md:block overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr
-                    class="bg-slate-50/70 border-b border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    <th class="py-4 px-6">Date & Time</th>
-                    <th class="py-4 px-6">Attending Doctor</th>
-                    <th class="py-4 px-6">Reason</th>
-                    <th class="py-4 px-6 text-right">Record Details</th>
+                    class="border-b border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <th class="pb-4 px-6">Date & Time</th>
+                    <th class="pb-4 px-6">Attending Doctor</th>
+                    <th class="pb-4 px-6">Reason</th>
+                    <th class="pb-4 px-6 text-right">Record Details</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-50 text-slate-700 text-sm">
+            <tbody class="divide-y divide-slate-100 text-slate-700 text-sm">
                 @foreach($appointments as $index => $appointment)
                     <tr @click="selectedRecord = records[{{ $index }}]; modalOpen = true"
-                        class="hover:bg-slate-50/40 hover:cursor-pointer transition duration-150"
+                        class="hover:bg-slate-50/50 hover:cursor-pointer transition duration-150"
                         x-show="!search || 
                                         '{{ strtolower($appointment->doctor->name) }}'.includes(search.toLowerCase()) || 
                                         '{{ strtolower($appointment->diagnosis ?? '') }}'.includes(search.toLowerCase())">
 
                         {{-- Date & Time --}}
                         <td class="py-5 px-6 whitespace-nowrap">
-                            <p class="font-black text-slate-900 tracking-tight text-sm">
+                            <p class="font-bold text-slate-900 tracking-tight text-sm">
                                 {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('d M, Y') }}
                             </p>
                             <span

@@ -34,8 +34,8 @@
         </div>
 
         <div
-            class="bg-white shadow-[0_20px_50px_rgba(0,0,0,0.03)] rounded-[2.5rem] border border-slate-100 overflow-hidden">
-            <div class="p-6 sm:p-10">
+            class="bg-white shadow-[0_20px_50px_rgba(0,0,0,0.04)] rounded-2xl border border-slate-100 overflow-hidden">
+            <div class="p-8 sm:p-8">
                 @livewire('doctor-queue')
             </div>
         </div>

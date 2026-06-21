@@ -1,25 +1,16 @@
-<div x-show="modalOpen" 
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0" 
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200" 
-    x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0"
-    class="fixed inset-0 z-[60] overflow-y-auto bg-slate-900/60 backdrop-blur-xs" 
-    x-cloak>
+<div x-show="modalOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+    class="fixed inset-0 z-[60] overflow-y-auto bg-slate-900/60 backdrop-blur-xs" x-cloak>
 
     {{-- Centering and Scroll Wrapper --}}
     <div class="flex items-center justify-center min-h-screen p-4 overflow-y-auto">
 
         {{-- Interactive Modal Document Card --}}
-        <div x-show="modalOpen" 
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 scale-95" 
-            x-transition:enter-end="opacity-100 scale-100"
-            x-transition:leave="transition ease-in duration-200" 
-            x-transition:leave-start="opacity-100 scale-100"
-            x-transition:leave-end="opacity-0 scale-95" 
-            @click.away="modalOpen = false"
+        <div x-show="modalOpen" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" @click.away="modalOpen = false"
             class="bg-white border border-slate-150 rounded-[1.5rem] md:rounded-[2rem] shadow-2xl p-5 md:p-8 w-[95%] md:w-full max-w-lg md:max-w-xl relative overflow-hidden">
 
             {{-- Close Handle with 44px min target size --}}
@@ -43,7 +34,8 @@
                     </div>
                     <div>
                         <h3 class="font-extrabold text-slate-900 leading-tight text-sm md:text-base"
-                            x-text="selectedRecord ? 'Dr. ' + selectedRecord.doctor.name : ''"></h3>
+                            x-text="selectedRecord ? 'Dr. ' + selectedRecord.doctor.name.replace(/^dr\.?\s+/i, '') : ''">
+                        </h3>
                         <span
                             class="text-[10px] md:text-xs text-rose-500 font-bold uppercase tracking-wider block mt-0.5"
                             x-text="selectedRecord && selectedRecord.doctor.doctor ? selectedRecord.doctor.doctor.specialization : 'General Medicine'"></span>
@@ -83,7 +75,7 @@
                 <div class="bg-rose-50/30 border border-rose-100/40 rounded-xl md:rounded-2xl p-4 md:p-5">
                     <h4 class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-rose-500 mb-2">
                         Official Diagnoses</h4>
-                    <p class="text-xs md:text-sm font-bold text-slate-800"
+                    <p class="text-xs text-slate-700 font-medium leading-relaxed"
                         x-text="selectedRecord && selectedRecord.diagnosis ? selectedRecord.diagnosis : 'Routine Clinical Evaluation'">
                     </p>
                 </div>
@@ -91,33 +83,26 @@
 
             {{-- Bottom Area: Medications and Blockchain signature --}}
             <div class="mt-6 pt-5 border-t border-slate-100 space-y-5">
-                <div class="bg-slate-900 text-white rounded-xl md:rounded-2xl p-4 md:p-5 relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 w-16 h-16 bg-white/5 rounded-full"></div>
-                    <h4 class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">
+                <div class="bg-cyan-50/30 border border-cyan-100/60 rounded-xl md:rounded-2xl p-4 md:p-5 relative overflow-hidden">
+                    <h4 class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-cyan-600 mb-3">
                         Prescribed Medications</h4>
-                    <p class="text-xs font-bold text-slate-100 leading-relaxed"
+                    <p class="text-xs text-slate-700 font-medium leading-relaxed"
                         x-text="selectedRecord && selectedRecord.prescription ? selectedRecord.prescription : 'No prescription needed.'">
                     </p>
                 </div>
 
-                {{-- Cryptographic Verification Seal --}}
-                <div
-                    class="border border-emerald-100 bg-emerald-50/50 rounded-lg md:rounded-xl p-3 md:p-3.5 flex items-start gap-2.5 md:gap-3">
-                    <div
-                        class="w-6 h-6 md:w-7 md:h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 shrink-0 mt-0.5">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"
-                            viewBox="0 0 24 24">
+
+
+                {{-- View Full Page Action --}}
+                <div class="pt-2">
+                    <a :href="selectedRecord ? '/appointments/' + selectedRecord.id + '/record' : '#'"
+                        class="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black py-3 px-4 rounded-xl shadow-xs transition tracking-wider uppercase">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751A11.956 11.956 0 0112 2.714z" />
+                                d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                         </svg>
-                    </div>
-                    <div>
-                        <p class="text-[9px] md:text-[10px] font-black text-emerald-800 uppercase tracking-wider">✓
-                            Secure Ledger Integrity Seal</p>
-                        <p class="text-[8px] md:text-[9px] text-emerald-600 font-semibold mt-0.5 leading-normal">
-                            This medical record is cryptographically signed and audited. Immutable data protection
-                            standard enforced.</p>
-                    </div>
+                        View Full Ledger Page
+                    </a>
                 </div>
             </div>
         </div>

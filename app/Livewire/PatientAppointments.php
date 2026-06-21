@@ -43,7 +43,7 @@ class PatientAppointments extends Component
         );
 
         $allCount = Appointment::where('patient_id', $patientId)->count();
-        
+
         $upcomingCount = Appointment::where('patient_id', $patientId)
             ->whereIn('status', ['pending', 'confirmed'])
             ->where('appointment_time', '>=', $today)
