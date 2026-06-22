@@ -1,5 +1,6 @@
 @props([
     'title' => 'Smart Clinic',
+    'showFooter' => true,
 ])
 <!DOCTYPE html>
 <html lang="en" class="h-full" data-theme="corporate">
@@ -62,8 +63,6 @@
                 <main class="flex-1 p-4 md:p-6 lg:p-10 ">
                     {{ $slot }}
                 </main>
-
-                <x-layout.footer />
             </div>
         </div>
     @else
@@ -73,7 +72,9 @@
             <main class="grow">
                 {{ $slot }}
             </main>
-            <x-layout.footer />
+            @if ($showFooter)
+                <x-layout.footer />
+            @endif
         </div>
     @endauth
 

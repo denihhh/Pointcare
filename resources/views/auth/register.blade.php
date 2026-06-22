@@ -1,4 +1,4 @@
-<x-layout.layout title="Register">
+<x-layout.layout title="Register" :showFooter="false">
     <div class="w-full flex flex-col items-center pt-16 md:pt-24 px-4 pb-12">
         <div class="w-full max-w-md">
         <x-form title="Sign Up" description="Start your appointment today!">

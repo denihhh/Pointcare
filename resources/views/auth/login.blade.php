@@ -1,4 +1,4 @@
-<x-layout.layout title="Login">
+<x-layout.layout title="Login" :showFooter="false">
     
     {{-- Unified Layout Wrapper: Pushes down comfortably from the navbar --}}
     <div class="w-full flex flex-col items-center pt-16 md:pt-24 px-4 pb-12">

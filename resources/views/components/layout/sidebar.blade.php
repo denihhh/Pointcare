@@ -28,19 +28,7 @@
                 </div>
             </a>
 
-            <a href="/notifications"
-                class="relative p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50/80 rounded-2xl transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center"
-                title="View Notifications">
-                <svg class="h-5.5 w-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                </svg>
-                <span class="absolute top-2 right-2 flex h-2 w-2">
-                    <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                </span>
-            </a>
+            <livewire:notification-bell />
 
             {{-- Close drawer handle for small mobile screens --}}
             <button @click="sidebarOpen = false" class="p-1 rounded-lg hover:bg-red-50 lg:hidden text-slate-400">

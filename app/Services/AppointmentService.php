@@ -19,6 +19,12 @@ class AppointmentService
         ]);
 
         AppointmentCreated::dispatch($appointment);
+
+        // Notify doctor of new inbound booking request
+        $doctor = $appointment->doctor;
+        if ($doctor) {
+            $doctor->notify(new \App\Notifications\NewBookingRequest($appointment));
+        }
     }
 
     public function update(Appointment $appointment, array $attributes): ?string
@@ -42,7 +48,15 @@ class AppointmentService
 
         $appointment->update(['status' => 'cancelled']);
 
-        AppointmentCancelled::dispatch($appointment->fresh());
+        $appointment = $appointment->fresh();
+
+        AppointmentCancelled::dispatch($appointment);
+
+        // Notify doctor of cancellation by patient
+        $doctor = $appointment->doctor;
+        if ($doctor) {
+            $doctor->notify(new \App\Notifications\BookingCancelled($appointment));
+        }
 
         return null;
     }
@@ -59,8 +73,22 @@ class AppointmentService
 
         if ($this->isCancelled($appointment)) {
             AppointmentCancelled::dispatch($appointment);
+
+            // Notify patient of doctor rejection
+            $patient = $appointment->patient;
+            if ($patient) {
+                $patient->notify(new \App\Notifications\AppointmentRejected($appointment));
+            }
         } else {
             AppointmentUpdated::dispatch($appointment);
+
+            // Notify patient of doctor confirmation
+            if ($this->isConfirmed($appointment)) {
+                $patient = $appointment->patient;
+                if ($patient) {
+                    $patient->notify(new \App\Notifications\AppointmentConfirmed($appointment));
+                }
+            }
         }
 
         return null;

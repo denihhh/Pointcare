@@ -1,56 +1,79 @@
-# Smart Booking System
+# PointCare – Clinical Booking System
 
-## Introduction
-lolol
-Smart Booking System is one of my project during internship. It is a system that allow patients, to book their appointments with
-only using an online web application, which can reduce their waiting time for booking an appointment.
+[![Laravel](https://img.shields.io/badge/Framework-Laravel%2011-red?logo=laravel)](https://laravel.com)
+[![Livewire](https://img.shields.io/badge/Frontend-Livewire%20v3-pink?logo=livewire)](https://livewire.laravel.com)
+[![Alpine.js](https://img.shields.io/badge/Scripting-Alpine.js-blue?logo=alpinejs)](https://alpinejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind%20CSS-38B2AC?logo=tailwindcss)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 
-## About Laravel
+## Project Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**PointCare** is an enterprise-grade, web-based clinical booking application developed during my professional software engineering internship. The system is architected to eliminate traditional clinic operational bottlenecks, allowing patients to seamlessly schedule, track, and manage appointments online, dramatically reducing their waiting times.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Built with a focus on modern, real-time reactive user interfaces and robust security practices, PointCare delivers an optimized workspace for both healthcare consumers (Patients) and clinical providers (Doctors).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Tech Stack & Architecture
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+PointCare leverages the power of the **TALL Stack**, prioritizing a decoupled, component-driven approach for long-term maintainability:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* **Backend Core:** Laravel 11 (Expressive routing, Eloquent ORM, and dependency injection service layers).
+* **Reactivity Layer:** Livewire v3 (Asynchronous, AJAX-driven DOM hydration with zero complex JavaScript overhead).
+* **Frontend State Management:** Alpine.js (Lightweight reactive scripting for absolute UI controls such as overlays and modal layers).
+* **Design Language:** Tailwind CSS (Custom premium aesthetic focusing on clean minimalist slate tracking and high-contrast crimson/rose accents).
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## Core Product Features
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Dual-Role Adaptive Dashboards
+* **Patient Portal:** A streamlined historical ledger view where users can securely review upcoming and past consultations, audit booking timestamps, and filter scheduling history seamlessly via a smart status-tab strip.
+* **Doctor Workspace:** An active operational queue detailing daily clinical schedules, patient consultation metrics (pending approvals vs. completed sessions), and intuitive availability parameter controls.
 
-```bash
-composer require laravel/boost --dev
+### Seamless Asynchronous UI
+* **Reactive Pagination:** High-performance, unconflicted Livewire datasets that transition smoothly through layout pages without ever triggering a hard browser tab refresh.
+* **Visual Stacking Isolation:** Precision-engineered modal popups utilizing fixed viewport clamping (`fixed inset-0`) and isolated z-indexing to fully clear global layouts (sidebars/navbars) across all mobile and desktop viewports.
 
-php artisan boost:install
-```
+### Enterprise Security & Integrity
+* **Strict Access Control:** Custom role-based middleware guarding administrative endpoints and restricting unauthorized visibility boundaries between clinical files and public ledgers.
+* **Data Protection:** Comprehensive protection parameters guarding forms against cross-site scripting, direct object references, and data mutations.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Getting Started
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Prerequisites
+* PHP >= 8.2
+* Composer
+* Node.js & NPM
+* MySQL or SQLite Database
 
-## Code of Conduct
+### Installation & Local Setup
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/denihhh/pointcare.git
+   cd pointcare-booking
 
-## Security Vulnerabilities
+2. **Install Dependencies:**
+   ```bash
+   composer install
+   npm install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. **Configure Environment Parameters:**
+   
+    copy .env.example into .env
+   ```bash
+   php artisan key:generate
+Open your newly created .env file and configure your database driver and connection attributes.
 
-## License
+4. **Execute Database Migrations:**
+   ```bash
+   php artisan migrate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. **Build Assets & Boot the Application Engine:**
+   ```bash
+   npm run dev
+    # In a separate terminal tab:
+    php artisan serve
