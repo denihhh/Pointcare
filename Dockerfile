@@ -16,11 +16,11 @@ RUN mkdir -p /etc/entrypoint.d && \
 
 WORKDIR /var/www/html
 
-# Copy application files and set ownership to webuser
-COPY --chown=webuser:webuser . .
+# Copy application files and set ownership to www-data
+COPY --chown=www-data:www-data . .
 
-# Switch back to webuser for installing dependencies
-USER webuser
+# Switch back to www-data for installing dependencies
+USER www-data
 
 # Install composer packages and compile Vite assets
 RUN composer install --no-dev --optimize-autoloader --no-interaction && \
