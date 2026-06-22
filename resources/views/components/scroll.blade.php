@@ -1,6 +1,7 @@
 <div x-data="{ show: false }"
      @scroll.window="show = (window.pageYOffset > 400) ? true : false"
-     class="fixed bottom-8 right-8 z-60">
+     class="fixed bottom-8 right-8 z-60 print:hidden">
+
 
     <button x-show="show"
             x-transition:enter="transition ease-out duration-300"

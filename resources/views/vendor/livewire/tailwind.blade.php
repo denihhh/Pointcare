@@ -1,13 +1,13 @@
 @php
-if (! isset($scrollTo)) {
-    $scrollTo = '#top';
-}
+    if (!isset($scrollTo)) {
+        $scrollTo = false;
+    }
 
-$scrollIntoViewJsSnippet = ($scrollTo !== false)
-    ? <<<JS
-       (\$el.closest('{$scrollTo}') || document.querySelector('{$scrollTo}')).scrollIntoView({ behavior: 'smooth', block: 'start' })
-    JS
-    : '';
+    $scrollIntoViewJsSnippet = ($scrollTo !== false)
+        ? <<<JS
+               (\$el.closest('{$scrollTo}') || document.querySelector('{$scrollTo}'))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            JS
+        : '';
 @endphp
 
 <div class="mt-6">
@@ -22,24 +22,18 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                         {!! __('pagination.previous') !!}
                     </span>
                 @else
-                    <button
-                        type="button"
-                        wire:click="previousPage('{{ $paginator->getPageName() }}')"
+                    <button type="button" wire:click="previousPage('{{ $paginator->getPageName() }}')"
                         x-on:click="{{ $scrollIntoViewJsSnippet }}"
-                        class="px-4 py-2 text-sm text-gray-700 bg-white border rounded-xl hover:bg-rose-50 transition"
-                    >
+                        class="px-4 py-2 text-sm text-gray-700 bg-white border rounded-xl hover:bg-rose-50 transition">
                         {!! __('pagination.previous') !!}
                     </button>
                 @endif
 
                 {{-- Next --}}
                 @if ($paginator->hasMorePages())
-                    <button
-                        type="button"
-                        wire:click="nextPage('{{ $paginator->getPageName() }}')"
+                    <button type="button" wire:click="nextPage('{{ $paginator->getPageName() }}')"
                         x-on:click="{{ $scrollIntoViewJsSnippet }}"
-                        class="px-4 py-2 text-sm text-gray-700 bg-white border rounded-xl hover:bg-rose-50 transition"
-                    >
+                        class="px-4 py-2 text-sm text-gray-700 bg-white border rounded-xl hover:bg-rose-50 transition">
                         {!! __('pagination.next') !!}
                     </button>
                 @else
@@ -72,11 +66,9 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                             ‹
                         </span>
                     @else
-                        <button
-                            wire:click="previousPage('{{ $paginator->getPageName() }}')"
+                        <button wire:click="previousPage('{{ $paginator->getPageName() }}')"
                             x-on:click="{{ $scrollIntoViewJsSnippet }}"
-                            class="px-3 py-2 bg-white border rounded-xl hover:bg-rose-50 transition"
-                        >
+                            class="px-3 py-2 bg-white border rounded-xl hover:bg-rose-50 transition">
                             ‹
                         </button>
                     @endif
@@ -96,11 +88,9 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                                         {{ $page }}
                                     </span>
                                 @else
-                                    <button
-                                        wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')"
+                                    <button wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')"
                                         x-on:click="{{ $scrollIntoViewJsSnippet }}"
-                                        class="px-4 py-2 bg-white border rounded-xl hover:bg-rose-50 transition"
-                                    >
+                                        class="px-4 py-2 bg-white border rounded-xl hover:bg-rose-50 transition">
                                         {{ $page }}
                                     </button>
                                 @endif
@@ -110,11 +100,9 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
 
                     {{-- Next --}}
                     @if ($paginator->hasMorePages())
-                        <button
-                            wire:click="nextPage('{{ $paginator->getPageName() }}')"
+                        <button wire:click="nextPage('{{ $paginator->getPageName() }}')"
                             x-on:click="{{ $scrollIntoViewJsSnippet }}"
-                            class="px-3 py-2 bg-white border rounded-xl hover:bg-rose-50 transition"
-                        >
+                            class="px-3 py-2 bg-white border rounded-xl hover:bg-rose-50 transition">
                             ›
                         </button>
                     @else

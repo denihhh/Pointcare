@@ -15,7 +15,7 @@ it('allows a patient to create an appointment successfully', function () {
     $appointmentData = [
         'reason' => 'Annual Health Checkup',
         'doctor_id' => $doctor->id,
-        'appointment_time' => '2026-05-20 10:00:00',
+        'appointment_time' => now()->addDay()->format('Y-m-d H:i:s'),
     ];
 
     // 3. Action: Submit the form as the logged-in patient

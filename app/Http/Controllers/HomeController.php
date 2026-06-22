@@ -9,8 +9,10 @@ class HomeController extends Controller
     public function index()
     {
         $upcomingAppointment = null;
+        $pastAppointments = collect();
         $todayCount = 0;
         $pendingCount = 0;
+        $todayAppointments = collect();
 
 
         if (Auth::check() && Auth::user()->role === 'patient') {
@@ -19,6 +21,16 @@ class HomeController extends Controller
                 ->where('appointment_time', '>=', now())
                 ->orderBy('appointment_time', 'asc')
                 ->first();
+
+            $pastAppointments = Auth::user()->appointments()
+                ->with('doctor')
+                ->where(function ($query) {
+                    $query->where('appointment_time', '<', now())
+                          ->orWhereIn('status', ['completed', 'cancelled']);
+                })
+                ->orderBy('appointment_time', 'desc')
+                ->take(3)
+                ->get();
         } elseif (Auth::check() && Auth::user()->role === 'doctor') {
             $upcomingAppointment = \App\Models\Appointment::where('doctor_id', Auth::id())
                 ->where('status', 'confirmed')
@@ -35,8 +47,14 @@ class HomeController extends Controller
             $pendingCount = \App\Models\Appointment::where('doctor_id', Auth::id())
                 ->where('status', 'pending')
                 ->count();
+
+            $todayAppointments = \App\Models\Appointment::where('doctor_id', Auth::id())
+                ->whereDate('appointment_time', \Carbon\Carbon::today())
+                ->with('patient')
+                ->orderBy('appointment_time', 'asc')
+                ->get();
         }
 
-        return view('welcome', compact('upcomingAppointment', 'todayCount', 'pendingCount'));
+        return view('welcome', compact('upcomingAppointment', 'pastAppointments', 'todayCount', 'pendingCount', 'todayAppointments'));
     }
 }
