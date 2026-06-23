@@ -1,4 +1,4 @@
-FROM richarvey/nginx-php-fpm:php8.2
+FROM richarvey/nginx-php-fpm:latest
 
 # Install Node.js and NPM
 RUN apk add --no-cache nodejs npm
