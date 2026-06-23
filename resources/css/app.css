@@ -51,3 +51,41 @@
 
 }
 
+body {
+    position: relative;
+    background-color: var(--color-background);
+    min-height: 100vh;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    
+    /* Subtle grid line color: matched to background hue with slightly more chroma */
+    --grid-color: oklch(0.91 0.02 15 / 0.4);
+    
+    /* Ambient glows matching the site's accent and illustration themes */
+    --glow-rose: oklch(0.85 0.12 15 / 0.15);
+    --glow-cyan: oklch(0.88 0.08 200 / 0.08);
+    
+    background-image:
+        /* Top-center ambient rose glow */
+        radial-gradient(circle at 50% -10%, var(--glow-rose) 0%, transparent 60%),
+        /* Top-right subtle cyan glow for color depth */
+        radial-gradient(circle at 90% 10%, var(--glow-cyan) 0%, transparent 50%),
+        /* Grid pattern */
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    
+    background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    background-position: 0 0, 0 0, center top, center top;
+    
+    /* Fades the grid towards the bottom and viewport boundaries */
+    mask-image: radial-gradient(circle at 50% 30%, black 20%, rgba(0, 0, 0, 0.45) 75%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at 50% 30%, black 20%, rgba(0, 0, 0, 0.45) 75%, transparent 100%);
+}
+
+

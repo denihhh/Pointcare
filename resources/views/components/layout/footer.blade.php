@@ -10,16 +10,21 @@
                     <span class="text-2xl font-black text-slate-900 tracking-tight">PointCare</span>
                 </div>
                 <p class="text-slate-500 max-w-sm leading-relaxed text-sm">
-                    Empowering patients and practitioners with seamless clinical scheduling and healthcare management. Dedicated to providing better accessibility for all.
+                    Empowering patients and practitioners with seamless clinical scheduling and healthcare management.
+                    Dedicated to providing better accessibility for all.
                 </p>
             </div>
 
             <div>
                 <h4 class="text-sm font-bold text-slate-900 uppercase tracking-widest mb-6">System</h4>
                 <ul class="space-y-4">
-                    <li><a href="/dashboard" class="text-slate-500 hover:text-rose-500 transition-colors text-sm">Dashboard</a></li>
-                    <li><a href="/appointments/create" class="text-slate-500 hover:text-rose-500 transition-colors text-sm">Book Appointment</a></li>
-                    <li><a href="#" class="text-slate-500 hover:text-rose-500 transition-colors text-sm">Our Doctors</a></li>
+                    <li><a href="/dashboard"
+                            class="text-slate-500 hover:text-rose-500 transition-colors text-sm">Dashboard</a></li>
+                    <li><a href="/appointments/create"
+                            class="text-slate-500 hover:text-rose-500 transition-colors text-sm">Book Appointment</a>
+                    </li>
+                    <li><a href="#" class="text-slate-500 hover:text-rose-500 transition-colors text-sm">Our Doctors</a>
+                    </li>
                 </ul>
             </div>
 
@@ -39,10 +44,10 @@
 
         <div class="border-t border-slate-100 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p class="text-slate-400 text-xs">
-                &copy; {{ date('Y') }} PointCare Clinical System. All rights reserved.
+                &copy; {{ date('Y') }} Pointcare - Danish Haikal. All rights reserved.
             </p>
             <div class="flex space-x-6 mt-4 md:mt-0">
-                <span class="text-xs font-bold text-slate-300 uppercase tracking-tighter">Powered by Laravel & Herd</span>
+                <span class="text-xs font-bold text-slate-300 uppercase tracking-tighter">Powered by Laravel</span>
             </div>
         </div>
     </div>
