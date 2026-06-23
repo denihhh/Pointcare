@@ -7,7 +7,7 @@ RUN apk add --no-cache nodejs npm
 COPY . .
 
 # Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php
 
 # Install NPM packages and compile Vite assets
 RUN npm install && npm run build
