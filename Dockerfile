@@ -1,10 +1,18 @@
-# --- Stage 1: Build Frontend Assets ---
+# --- Stage 1: Build PHP Dependencies ---
+FROM composer:latest AS composer-builder
+WORKDIR /app
+COPY . .
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php
+
+# --- Stage 2: Build Frontend Assets ---
 FROM node:20-alpine AS node-builder
 WORKDIR /app
 COPY . .
+# Copy vendor folder from Stage 1 so Vite can resolve alpine-livewire imports
+COPY --from=composer-builder /app/vendor ./vendor
 RUN npm install && npm run build
 
-# --- Stage 2: Serve PHP-FPM and Nginx ---
+# --- Stage 3: Serve PHP-FPM and Nginx ---
 FROM richarvey/nginx-php-fpm:latest
 
 WORKDIR /var/www/html
@@ -12,11 +20,9 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Copy compiled Vite assets from Node builder stage
+# Copy composer vendor folder and compiled Vite assets
+COPY --from=composer-builder /app/vendor ./vendor
 COPY --from=node-builder /app/public/build ./public/build
-
-# Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php
 
 # Configure image environment variables
 ENV WEBROOT /var/www/html/public
