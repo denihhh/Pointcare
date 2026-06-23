@@ -1,16 +1,22 @@
+# --- Stage 1: Build Frontend Assets ---
+FROM node:20-alpine AS node-builder
+WORKDIR /app
+COPY . .
+RUN npm install && npm run build
+
+# --- Stage 2: Serve PHP-FPM and Nginx ---
 FROM richarvey/nginx-php-fpm:latest
 
-# Install Node.js and NPM
-RUN apk add --no-cache nodejs npm
+WORKDIR /var/www/html
 
-# Copy the application code
+# Copy application files
 COPY . .
+
+# Copy compiled Vite assets from Node builder stage
+COPY --from=node-builder /app/public/build ./public/build
 
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php
-
-# Install NPM packages and compile Vite assets
-RUN npm install && npm run build
 
 # Configure image environment variables
 ENV WEBROOT /var/www/html/public
