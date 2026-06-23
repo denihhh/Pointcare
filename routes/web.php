@@ -71,6 +71,10 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/consultation-notes', fn () => redirect()->route('doctor.clinical-records'));
 });
 
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', \App\Livewire\AdminDashboard::class)->name('dashboard');
+});
+
 Route::get('/appointments/{appointment}/record', [AppointmentController::class, 'showRecord'])
     ->middleware('auth')
     ->name('appointments.record');

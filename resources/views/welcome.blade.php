@@ -8,6 +8,12 @@
             :todayCount="$todayCount"
             :pendingCount="$pendingCount"
             :todayAppointments="$todayAppointments"
+            :patientCount="$patientCount ?? 0"
+            :doctorCount="$doctorCount ?? 0"
+            :adminCount="$adminCount ?? 0"
+            :appointmentCount="$appointmentCount ?? 0"
+            :systemMetrics="$systemMetrics ?? []"
+            :recentUsers="$recentUsers ?? collect()"
             />
         @else
             <div class="-mt-4 relative pt-16 pb-32">

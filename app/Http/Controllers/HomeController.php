@@ -15,6 +15,46 @@ class HomeController extends Controller
         $todayAppointments = collect();
 
 
+        if (Auth::check() && Auth::user()->role === 'admin') {
+            $patientCount = \App\Models\User::where('role', 'patient')->count();
+            $doctorCount = \App\Models\User::where('role', 'doctor')->count();
+            $adminCount = \App\Models\User::where('role', 'admin')->count();
+            $appointmentCount = \App\Models\Appointment::count();
+
+            $systemMetrics = [
+                'php_version' => PHP_VERSION,
+                'laravel_version' => app()->version(),
+                'environment' => ucfirst(app()->environment()),
+                'db_driver' => config('database.default'),
+                'debug_mode' => config('app.debug') ? 'ENABLED' : 'DISABLED',
+                'timezone' => config('app.timezone'),
+                'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 1) . ' MB',
+            ];
+
+            $recentUsers = \App\Models\User::latest()->take(5)->get();
+
+            // Default variables to prevent welcome.blade.php undefined variable exceptions
+            $upcomingAppointment = null;
+            $pastAppointments = collect();
+            $todayCount = 0;
+            $pendingCount = 0;
+            $todayAppointments = collect();
+
+            return view('welcome', compact(
+                'patientCount', 
+                'doctorCount', 
+                'adminCount', 
+                'appointmentCount', 
+                'systemMetrics', 
+                'recentUsers',
+                'upcomingAppointment',
+                'pastAppointments',
+                'todayCount',
+                'pendingCount',
+                'todayAppointments'
+            ));
+        }
+
         if (Auth::check() && Auth::user()->role === 'patient') {
             $upcomingAppointment = Auth::user()->appointments()
                 ->where('status', 'confirmed')

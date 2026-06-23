@@ -17,6 +17,10 @@ class DashboardController extends Controller
             return redirect('/login')->with('success', 'Please login to access the dashboard.');
         }
 
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         if ($user->role === 'doctor') {
             $appointments = Appointment::where('doctor_id', $user->id)
                 ->with('patient')
