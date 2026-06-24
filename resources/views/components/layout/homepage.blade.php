@@ -24,7 +24,7 @@
                 </div>
 
                 <a href="/appointments/create"
-                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-bold rounded-xl shadow-sm text-white bg-rose-500 hover:bg-rose-600 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+                    class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-bold rounded-xl shadow-sm text-white bg-primary hover:bg-rose-600 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Appointment;
+use App\Models\ContactMessage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -20,6 +21,10 @@ class AdminDashboard extends Component
     // User management state
     public string $search = '';
     public string $roleFilter = 'all';
+
+    // Support messages state
+    public string $messageSearch = '';
+    public string $messageFilter = 'all'; // all, pending, resolved
 
     // Edit user form properties
     public ?User $selectedUser = null;
@@ -68,6 +73,16 @@ class AdminDashboard extends Component
     public function updatingAppointmentSearch(): void
     {
         $this->resetPage('appointmentsPage');
+    }
+
+    public function updatingMessageSearch(): void
+    {
+        $this->resetPage('messagesPage');
+    }
+
+    public function updatingMessageFilter(): void
+    {
+        $this->resetPage('messagesPage');
     }
 
     public function setTab(string $tab): void
@@ -291,6 +306,23 @@ class AdminDashboard extends Component
         session()->flash('success', 'Appointment record deleted successfully.');
     }
 
+    public function toggleMessageStatus(int $messageId): void
+    {
+        $message = ContactMessage::findOrFail($messageId);
+        $message->status = $message->status === 'pending' ? 'resolved' : 'pending';
+        $message->save();
+
+        session()->flash('success', "Message status updated successfully.");
+    }
+
+    public function deleteMessage(int $messageId): void
+    {
+        $message = ContactMessage::findOrFail($messageId);
+        $message->delete();
+
+        session()->flash('success', 'Support message deleted successfully.');
+    }
+
     public function render()
     {
         // System wide metrics
@@ -305,6 +337,10 @@ class AdminDashboard extends Component
         $completedAppointmentsCount = Appointment::where('status', 'completed')->count();
         $cancelledAppointmentsCount = Appointment::where('status', 'cancelled')->count();
         $todayAppointmentsCount = Appointment::whereDate('appointment_time', today())->count();
+
+        // Support Message metrics
+        $totalMessages = ContactMessage::count();
+        $pendingMessagesCount = ContactMessage::where('status', 'pending')->count();
 
         // User list with query filters
         $usersQuery = User::with('doctor')
@@ -338,9 +374,30 @@ class AdminDashboard extends Component
 
         $appointments = $appointmentsQuery->orderBy('appointment_time', 'desc')->paginate(10, ['*'], 'appointmentsPage');
 
+        // Support messages list with query filters
+        $messagesQuery = ContactMessage::query()
+            ->when($this->messageFilter !== 'all', function ($query) {
+                return $query->where('status', $this->messageFilter);
+            })
+            ->when($this->messageSearch !== '', function ($query) {
+                return $query->where(function ($sub) {
+                    $sub->where('name', 'like', '%' . $this->messageSearch . '%')
+                        ->orWhere('email', 'like', '%' . $this->messageSearch . '%')
+                        ->orWhere('subject', 'like', '%' . $this->messageSearch . '%')
+                        ->orWhere('message', 'like', '%' . $this->messageSearch . '%');
+                });
+            });
+
+        $messages = $messagesQuery->latest()->paginate(10, ['*'], 'messagesPage');
+
         $recentActivities = Appointment::with(['patient', 'doctor'])
             ->latest()
             ->take(5)
+            ->get();
+
+        $recentMessages = ContactMessage::where('status', 'pending')
+            ->latest()
+            ->take(3)
             ->get();
 
         return view('livewire.admin-dashboard', [
@@ -354,9 +411,13 @@ class AdminDashboard extends Component
             'completedAppointmentsCount' => $completedAppointmentsCount,
             'cancelledAppointmentsCount' => $cancelledAppointmentsCount,
             'todayAppointmentsCount' => $todayAppointmentsCount,
+            'totalMessages' => $totalMessages,
+            'pendingMessagesCount' => $pendingMessagesCount,
             'users' => $users,
             'appointments' => $appointments,
+            'messages' => $messages,
             'recentActivities' => $recentActivities,
+            'recentMessages' => $recentMessages,
         ])->layout('components.layout.layout', ['title' => 'Admin Dashboard']);
     }
 }

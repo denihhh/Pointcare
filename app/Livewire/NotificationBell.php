@@ -27,6 +27,7 @@ class NotificationBell extends Component
             }
         }
     }
+    
 
     public function render()
     {

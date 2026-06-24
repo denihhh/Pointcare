@@ -69,12 +69,21 @@
             class="pb-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all duration-300 focus:outline-none whitespace-nowrap {{ $activeTab === 'appointments' ? 'text-rose-600 border-rose-500' : 'text-slate-400 border-transparent hover:text-slate-600' }}">
             📅 Appointments ({{ $totalAppointments }})
         </button>
+        <button wire:click="setTab('messages')"
+            class="pb-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all duration-300 focus:outline-none whitespace-nowrap flex items-center gap-1.5 {{ $activeTab === 'messages' ? 'text-rose-600 border-rose-500' : 'text-slate-400 border-transparent hover:text-slate-600' }}">
+            📩 Support Messages ({{ $totalMessages }})
+            @if ($pendingMessagesCount > 0)
+                <span class="bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shrink-0 animate-pulse">
+                    {{ $pendingMessagesCount }}
+                </span>
+            @endif
+        </button>
     </div>
 
     <!-- ================== 1. OVERVIEW TAB SCREEN ================== -->
     @if ($activeTab === 'overview')
         <!-- Key Metrics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <!-- Patient Card -->
             <div class="bg-gradient-to-br from-rose-50/60 to-white border border-rose-100/30 p-6 rounded-3xl shadow-xs flex items-center space-x-5 hover:-translate-y-1 hover:shadow-md hover:border-rose-100/80 transition-all duration-300 group">
                 <div class="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-white shadow-sm shadow-rose-200 group-hover:scale-105 transition-transform duration-300">
@@ -111,6 +120,21 @@
                 <div>
                     <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Administrators</h3>
                     <p class="text-3xl font-black text-slate-900 mt-1 leading-none">{{ $totalAdmins }}</p>
+                </div>
+            </div>
+
+            <!-- Support Messages Card -->
+            <div wire:click="setTab('messages')" class="bg-gradient-to-br from-amber-50/60 to-white border border-amber-100/30 p-6 rounded-3xl shadow-xs flex items-center space-x-5 hover:-translate-y-1 hover:shadow-md hover:border-amber-100/80 transition-all duration-300 group cursor-pointer">
+                <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white shadow-sm shadow-amber-200 group-hover:scale-105 transition-transform duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pending Support</h3>
+                    <p class="text-3xl font-black text-slate-900 mt-1 leading-none">
+                        {{ $pendingMessagesCount }} <span class="text-xs font-bold text-slate-400">new</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -232,6 +256,52 @@
                 </div>
             </div>
         </div>
+
+        <!-- Inbox Quick View Section -->
+        @if ($recentMessages->count() > 0)
+            <div class="mt-8 bg-amber-50/20 border border-amber-100/50 p-8 rounded-3xl shadow-2xs">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+                            <span>📩</span> Pending Support Inbox
+                        </h2>
+                        <p class="text-xs font-semibold text-slate-400 mt-1">Review recently received inquiries requiring administrative attention.</p>
+                    </div>
+                    <button wire:click="setTab('messages')" class="text-xs font-black text-rose-500 hover:text-rose-600 uppercase tracking-widest bg-white border border-slate-100 px-4 py-2 rounded-xl shadow-2xs">
+                        View All Messages &rarr;
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @foreach ($recentMessages as $msg)
+                        <div class="bg-white border border-slate-100 p-6 rounded-2xl shadow-3xs flex flex-col justify-between hover:border-amber-200 transition">
+                            <div>
+                                <div class="flex justify-between items-start gap-1">
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-extrabold text-slate-800 truncate leading-tight">{{ $msg->name }}</p>
+                                        <span class="text-[10px] text-slate-400 font-semibold truncate block mt-0.5">{{ $msg->email }}</span>
+                                    </div>
+                                    <span class="text-[9px] font-black text-slate-400 shrink-0">
+                                        {{ $msg->created_at->diffForHumans(null, true) }}
+                                    </span>
+                                </div>
+                                <div class="mt-3.5 mb-4">
+                                    <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[8px] font-black uppercase tracking-wider">
+                                        {{ $msg->subject }}
+                                    </span>
+                                    <p class="text-xs text-slate-500 leading-relaxed font-medium mt-2 line-clamp-3" title="{{ $msg->message }}">
+                                        {{ $msg->message }}
+                                    </p>
+                                </div>
+                            </div>
+                            <button wire:click="toggleMessageStatus({{ $msg->id }})" class="w-full py-2 bg-slate-50 hover:bg-rose-50 border border-slate-150 hover:text-rose-600 hover:border-rose-100 text-[10px] font-black tracking-widest rounded-xl transition uppercase text-slate-600">
+                                Mark Resolved
+                            </button>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     @endif
 
     <!-- ================== 2. USERS MANAGEMENT TAB SCREEN ================== -->
@@ -621,6 +691,103 @@
 
             <div class="mt-6" id="appointments-scroll-target">
                 {{ $appointments->links('livewire::tailwind') }}
+            </div>
+        </div>
+    @endif
+
+    <!-- ================== 4. SUPPORT MESSAGES TAB SCREEN ================== -->
+    @if ($activeTab === 'messages')
+        <div class="bg-white border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] rounded-3xl p-6">
+            
+            <!-- Filters and Search Bar -->
+            <div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="relative w-full md:max-w-xs">
+                    <input wire:model.live.debounce.300ms="messageSearch" type="text" placeholder="Search sender, email, subject, message..." 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-rose-450 focus:ring-1 focus:ring-rose-400 focus:bg-white transition" />
+                </div>
+
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                    <select wire:model.live="messageFilter" 
+                        class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:border-rose-450 focus:ring-1 focus:ring-rose-400 focus:bg-white transition w-full md:w-auto">
+                        <option value="all">All Messages</option>
+                        <option value="pending">Pending Status</option>
+                        <option value="resolved">Resolved Status</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- List Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-[9px]">
+                            <th class="py-4 px-3">Sender Details</th>
+                            <th class="py-4 px-3">Date Received</th>
+                            <th class="py-4 px-3">Inquiry Type</th>
+                            <th class="py-4 px-3">Message Body</th>
+                            <th class="py-4 px-3">Status</th>
+                            <th class="py-4 px-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50 text-sm font-semibold text-slate-700">
+                        @forelse ($messages as $msg)
+                            <tr class="hover:bg-slate-50/50 transition">
+                                <td class="py-4 px-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-400/20 to-rose-600/10 text-rose-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                            {{ substr($msg->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-850 text-sm leading-none">{{ $msg->name }}</div>
+                                            <span class="text-[10px] text-slate-400 font-semibold block mt-1">{{ $msg->email }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-3 font-medium text-slate-500">
+                                    {{ $msg->created_at->diffForHumans() }}
+                                </td>
+                                <td class="py-4 px-3">
+                                    <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-wider">
+                                        {{ $msg->subject }}
+                                    </span>
+                                </td>
+                                <td class="py-4 px-3 max-w-[280px] truncate text-slate-500 font-medium" title="{{ $msg->message }}">
+                                    {{ $msg->message }}
+                                </td>
+                                <td class="py-4 px-3">
+                                    @if ($msg->status === 'pending')
+                                        <span class="bg-amber-50 text-amber-600 text-[9px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider border border-amber-100/50">
+                                            Pending
+                                        </span>
+                                    @else
+                                        <span class="bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase px-2.5 py-1 rounded-md tracking-wider border border-emerald-100/50">
+                                            Resolved
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="py-4 px-3 text-right flex items-center justify-end gap-2.5">
+                                    <button wire:click="toggleMessageStatus({{ $msg->id }})" 
+                                            class="bg-slate-50 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100 px-3 py-1.5 rounded-lg text-[10px] font-black tracking-widest transition-all duration-200 uppercase text-slate-600 whitespace-nowrap">
+                                        {{ $msg->status === 'pending' ? 'Mark Resolved' : 'Mark Pending' }}
+                                    </button>
+                                    <button wire:click="deleteMessage({{ $msg->id }})" onclick="return confirm('Permanently delete this support message?')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition duration-200" title="Delete Message">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="py-12 text-center text-slate-400 font-semibold">No support messages found matching the filters.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6" id="messages-scroll-target">
+                {{ $messages->links('livewire::tailwind') }}
             </div>
         </div>
     @endif

@@ -8,11 +8,23 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/contact', fn() => view('contact'))->name('contact');
+Route::get('/contact', fn() => view('contact'))->name('contact')->middleware('guest');
+Route::post('/contact', function (\Illuminate\Http\Request $request) {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'subject' => 'required|string|max:255',
+        'message' => 'required|string|min:10',
+    ]);
+
+    \App\Models\ContactMessage::create($validated);
+
+    return back()->with('alert', 'Thank you! Your message has been received. Our support team will get back to you shortly.');
+})->middleware('guest');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/notifications',fn()=> view('notifications'))->middleware('auth');
-Route::get('/about',fn()=> view('about'));
+Route::get('/about',fn()=> view('about'))->name('about')->middleware('guest');
 
 //registration route
 Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest');
