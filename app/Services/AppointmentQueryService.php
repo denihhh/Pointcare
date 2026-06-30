@@ -126,6 +126,6 @@ class AppointmentQueryService
 
     public function getDoctorsForSelect()
     {
-        return User::doctors()->select('id', 'name')->get();
+        return User::doctors()->with('doctor')->get();
     }
 }

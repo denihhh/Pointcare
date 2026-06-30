@@ -6,12 +6,9 @@
             <div class="flex items-center space-x-3 mb-2">
                 <span
                     class="bg-rose-150/80 text-rose-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-rose-50 border border-rose-100/50">
-                    👑 ADMINISTRATIVE AUTHORITY
+                    ADMINISTRATIVE AUTHORITY
                 </span>
-                <span class="text-slate-400 text-xs font-semibold flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
-                    System Live • {{ now()->format('l, d F Y') }}
-                </span>
+                
             </div>
             <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none">Control Panel</h1>
             <p class="text-slate-500 font-medium mt-2 max-w-xl">Supervise medical personnel credentials, role-based access tokens, database registries, and clinical session logs.</p>
@@ -59,33 +56,35 @@
     <div class="mb-8 border-b border-rose-100/40 flex items-center gap-8 overflow-x-auto scrollbar-none">
         <button wire:click="setTab('overview')"
             class="pb-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all duration-300 focus:outline-none whitespace-nowrap {{ $activeTab === 'overview' ? 'text-rose-600 border-rose-500' : 'text-slate-400 border-transparent hover:text-slate-600' }}">
-            🖥️ System Overview
+            System Overview
         </button>
         <button wire:click="setTab('users')"
             class="pb-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all duration-300 focus:outline-none whitespace-nowrap {{ $activeTab === 'users' ? 'text-rose-600 border-rose-500' : 'text-slate-400 border-transparent hover:text-slate-600' }}">
-            👥 User Accounts ({{ $totalUsers }})
+            User Accounts ({{ $totalUsers }})
         </button>
         <button wire:click="setTab('appointments')"
             class="pb-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all duration-300 focus:outline-none whitespace-nowrap {{ $activeTab === 'appointments' ? 'text-rose-600 border-rose-500' : 'text-slate-400 border-transparent hover:text-slate-600' }}">
-            📅 Appointments ({{ $totalAppointments }})
+            Appointments ({{ $totalAppointments }})
         </button>
         <button wire:click="setTab('messages')"
             class="pb-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all duration-300 focus:outline-none whitespace-nowrap flex items-center gap-1.5 {{ $activeTab === 'messages' ? 'text-rose-600 border-rose-500' : 'text-slate-400 border-transparent hover:text-slate-600' }}">
-            📩 Support Messages ({{ $totalMessages }})
+            Support Messages ({{ $totalMessages }})
             @if ($pendingMessagesCount > 0)
                 <span class="bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shrink-0 animate-pulse">
                     {{ $pendingMessagesCount }}
                 </span>
             @endif
         </button>
+
     </div>
+    
 
     <!-- ================== 1. OVERVIEW TAB SCREEN ================== -->
     @if ($activeTab === 'overview')
         <!-- Key Metrics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <!-- Patient Card -->
-            <div class="bg-gradient-to-br from-rose-50/60 to-white border border-rose-100/30 p-6 rounded-3xl shadow-xs flex items-center space-x-5 hover:-translate-y-1 hover:shadow-md hover:border-rose-100/80 transition-all duration-300 group">
+            <div class="bg-gradient-to-br from-cyan-50/60 to-white border border-cyan-100/30 p-6 rounded-3xl shadow-xs flex items-center space-x-5 hover:-translate-y-1 hover:shadow-md hover:border-cyan-100/80 transition-all duration-300 group">
                 <div class="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-white shadow-sm shadow-rose-200 group-hover:scale-105 transition-transform duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
@@ -263,7 +262,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h2 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                            <span>📩</span> Pending Support Inbox
+                            Pending Support Inbox
                         </h2>
                         <p class="text-xs font-semibold text-slate-400 mt-1">Review recently received inquiries requiring administrative attention.</p>
                     </div>
